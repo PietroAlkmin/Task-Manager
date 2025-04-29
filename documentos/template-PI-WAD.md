@@ -18,8 +18,7 @@
 
 ## <a name="c1"></a>1. Introdução (Semana 01)
 
-*Preencha com até 300 palavras – sem necessidade de fonte.*
-*Descreva brevemente o sistema que você irá desenvolver.*
+O projeto será o desenvolvimento de um Gerenciador de Tarefas, ele será voltado para estudantes e profissionais que buscam organizar suas atividades diárias de forma simples e eficiente. O sistema permitirá a criação de tarefas, definição de prazos e organização por prioridade. O objetivo é facilitar o gerenciamento de rotinas e aumentar a produtividade dos usuários.
 
 ---
 
@@ -27,11 +26,28 @@
 
 ### 2.1. Personas (Semana 01)
 
-*Posicione aqui sua(s) Persona(s) em forma de texto markdown com imagens, ou como imagem de template preenchido. Atualize esta seção ao longo do módulo se necessário.*
+<div align="center">
+  <sub>FIGURA 1 - Persona </sub><br>
+  <img src= "../assets/Persona.png" width="100%"
+  alt="Persona"><br>
+  <sup>Fonte: Material produzido pelo autor, 2025</sup>
+</div>
 
 ### 2.2. User Stories (Semana 01)
 
-*Posicione aqui a lista de User Stories levantadas para o projeto. Siga o template de User Stories e utilize a referência USXX para numeração (US01, US02, US03, ...). Indique todas as User Stories mapeadas, mesmo aquelas que não forem implementadas ao longo do projeto. Não se esqueça de explicar o INVEST de 1 User Storie prioritária.*
+Principais users storys:
+
+US01
+
+Como estudante universitário, quero criar novas tarefas com título, descrição e prazo, para que eu possa organizar meus estudos de forma eficiente.
+
+US02
+
+Como estudante universitário, quero visualizar minhas tarefas em uma lista organizada por prioridade, para que eu saiba quais atividades são mais urgentes.
+
+US03
+
+Como estudante universitário, quero receber lembretes sobre tarefas próximas do prazo de vencimento, para que eu não perca prazos importantes.
 
 ---
 
