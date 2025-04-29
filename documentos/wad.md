@@ -2,9 +2,10 @@
 
 **_Os trechos em itálico servem apenas como guia para o preenchimento da seção. Por esse motivo, não devem fazer parte da documentação final._**
 
-## Nome do Projeto
+## Task-It!
 
-#### Autor do projeto
+
+#### PIETRO ALKMIN 
 
 ## Sumário
 
@@ -35,7 +36,7 @@ O projeto será o desenvolvimento de um Gerenciador de Tarefas, ele será voltad
 
 ### 2.2. User Stories (Semana 01)
 
-Principais users storys:
+**Principais users storys:**
 
 US01
 
@@ -49,19 +50,24 @@ US03
 
 Como estudante universitário, quero receber notificações antes do vencimento das tarefas, para que eu não perca prazos importantes.
 
-Análise INVEST da US01:
+**Análise INVEST da US01:**
 
 Como estudante universitário, quero criar uma nova tarefa com título, descrição e prazo, para que eu possa organizar melhor minhas atividades acadêmicas.
 
 
-Justificativa:
+**Justificativa:**
 
-I – Independente -	A criação de tarefas é independente de outras funcionalidades, como listagem ou edição.
-N – Negociável - A forma de criação pode ser discutida: com campos obrigatórios, opcionais, ou até inserção rápida.
-V – Valiosa -	É fundamental para o funcionamento do sistema, pois sem tarefas não há o que organizar.
-E – Estimável	- O esforço para implementar a criação de tarefas pode ser estimado facilmente pela equipe.
-S – Pequena - A ação de criar uma tarefa é pequena e específica, focando em poucos campos (título, descrição e prazo).
-T – Testável	- Pode ser testada criando uma nova tarefa e verificando se ela foi armazenada corretamente no sistema.
+**I – Independente -**	A criação de tarefas é independente de outras funcionalidades, como listagem ou edição.
+
+**N – Negociável -** A forma de criação pode ser discutida: com campos obrigatórios, opcionais, ou até inserção rápida.
+
+**V – Valiosa -**	É fundamental para o funcionamento do sistema, pois sem tarefas não há o que organizar.
+
+**E – Estimável	-** O esforço para implementar a criação de tarefas pode ser estimado facilmente pela equipe.
+
+**S – Pequena -** A ação de criar uma tarefa é pequena e específica, focando em poucos campos (título, descrição e prazo).
+
+**T – Testável	-** Pode ser testada criando uma nova tarefa e verificando se ela foi armazenada corretamente no sistema.
 
 
 ---
