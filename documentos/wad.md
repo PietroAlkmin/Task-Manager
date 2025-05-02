@@ -76,9 +76,99 @@ Como estudante universitário, quero criar uma nova tarefa com título, descriç
 
 ### 3.1. Modelagem do banco de dados  (Semana 3)
 
-*Posicione aqui os diagramas de modelos relacionais do seu banco de dados, apresentando todos os esquemas de tabelas e suas relações. Utilize texto para complementar suas explicações, se necessário.*
+O banco de dados do sistema **Task-It!** foi projetado para suportar a organização e visualização de tarefas em um ambiente acadêmico, com foco em produtividade, categorização, agendamento e rastreamento de ações do usuário.
 
-*Posicione também o modelo físico com o Schema do BD (arquivo .sql)*
+#### 🔗 Modelo Relacional
+
+A imagem a seguir representa o modelo relacional do sistema, com todas as entidades principais e seus relacionamentos:
+
+![modelo-banco](../assets/Modelo-Banco.pdf)
+
+As principais entidades são:
+- **users**: armazena os dados dos usuários do sistema.
+- **tasks**: representa as tarefas criadas pelos usuários.
+- **categories**: categorias atribuídas às tarefas (ex: estudos, trabalho).
+- **tags**: etiquetas personalizadas para classificar tarefas.
+- **checklists**: itens de checklist relacionados a cada tarefa.
+- **anotacoes**: anotações adicionais que podem ser feitas dentro de uma tarefa.
+- **log_atividades**: registra ações realizadas nas tarefas (criação, edição, conclusão).
+- **tarefa_tags**: tabela associativa para o relacionamento N:N entre tarefas e tags.
+
+#### 🧱 Modelo Físico (Schema SQL)
+
+```sql
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  senha VARCHAR(255) NOT NULL,
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categories (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  user_id INT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE tasks (
+  id SERIAL PRIMARY KEY,
+  titulo VARCHAR(100) NOT NULL,
+  descricao TEXT,
+  vencimento DATE,
+  prioridade VARCHAR(20),
+  status VARCHAR(20) DEFAULT 'pendente',
+  recorrente VARCHAR(20),
+  data_hora_inicio DATETIME,
+  data_hora_fim DATETIME,
+  lembrete_minutos INT,
+  user_id INT NOT NULL,
+  categoria_id INT,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (categoria_id) REFERENCES categories(id)
+);
+
+CREATE TABLE checklists (
+  id SERIAL PRIMARY KEY,
+  conteudo VARCHAR(255) NOT NULL,
+  concluido BOOLEAN DEFAULT FALSE,
+  tarefa_id INT NOT NULL,
+  FOREIGN KEY (tarefa_id) REFERENCES tasks(id)
+);
+
+CREATE TABLE tags (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(50) NOT NULL,
+  user_id INT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE tarefa_tags (
+  tarefa_id INT NOT NULL,
+  tag_id INT NOT NULL,
+  PRIMARY KEY (tarefa_id, tag_id),
+  FOREIGN KEY (tarefa_id) REFERENCES tasks(id),
+  FOREIGN KEY (tag_id) REFERENCES tags(id)
+);
+
+CREATE TABLE anotacoes (
+  id SERIAL PRIMARY KEY,
+  conteudo TEXT NOT NULL,
+  data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  tarefa_id INT NOT NULL,
+  FOREIGN KEY (tarefa_id) REFERENCES tasks(id)
+);
+
+CREATE TABLE log_atividades (
+  id SERIAL PRIMARY KEY,
+  tipo VARCHAR(50),
+  data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  tarefa_id INT NOT NULL,
+  user_id INT NOT NULL,
+  FOREIGN KEY (tarefa_id) REFERENCES tasks(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
 
 ### 3.1.1 BD e Models (Semana 5)
 *Descreva aqui os Models implementados no sistema web*
