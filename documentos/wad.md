@@ -1,5 +1,7 @@
 # Web Application Document - Projeto Individual - Módulo 2 - Inteli
 
+**_Os trechos em itálico servem apenas como guia para o preenchimento da seção. Por esse motivo, não devem fazer parte da documentação final._**
+
 ## Task-It!
 
 
