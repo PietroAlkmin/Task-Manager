@@ -1,11 +1,11 @@
-# Boilerplate MVC em Node.js com PostgreSQL
+# Task-It! - Gerenciador de Tarefas
 
-Este projeto é um boilerplate básico para uma aplicação Node.js seguindo o padrão MVC (Model-View-Controller), utilizando PostgreSQL como banco de dados.
+Task-It! é um gerenciador de tarefas voltado para estudantes e profissionais que buscam organizar suas atividades diárias de forma simples e eficiente. O sistema permite a criação de tarefas, definição de prazos e organização por prioridade.
 
 ## Requisitos
 
-- Node.js (versão X.X.X)
-- PostgreSQL (versão X.X.X)
+- Node.js (versão 14.x ou superior)
+- PostgreSQL (versão 12.x ou superior)
 
 ## Instalação
 
@@ -17,31 +17,31 @@ Este projeto é um boilerplate básico para uma aplicação Node.js seguindo o p
 ```
 
 2. **Instalar as dependências:**
-    
+
 ```bash
 npm install
 ```
-    
+
 3. **Configurar o arquivo `.env`:**
-    
+
 Renomeie o arquivo `.env.example` para `.env` e configure as variáveis de ambiente necessárias, como as configurações do banco de dados PostgreSQL.
-    
+
 
 Configuração do Banco de Dados
 ------------------------------
 
 1. **Criar banco de dados:**
-    
+
     Crie um banco de dados PostgreSQL com o nome especificado no seu arquivo `.env`.
-    
+
 2. **Executar o script SQL de inicialização:**
-    
+
 ```bash
 npm run init-db
 ```
-    
+
 Isso criará a tabela `users` no seu banco de dados PostgreSQL com UUID como chave primária e inserirá alguns registros de exemplo.
-    
+
 
 Funcionalidades
 ---------------
@@ -80,4 +80,3 @@ Licença
 
 Este projeto está licenciado sob a Licença MIT.
 
-Este README.md fornece uma visão geral clara do boilerplate, incluindo instruções de instalação, configuração do banco de dados, funcionalidades principais, scripts disponíveis, estrutura de diretórios, como contribuir e informações de licença. Certifique-se de personalizar as seções com detalhes específicos do seu projeto conforme necessário.

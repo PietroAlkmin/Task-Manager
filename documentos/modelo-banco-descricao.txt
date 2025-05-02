@@ -1,0 +1,139 @@
+# Descrição do Modelo de Banco de Dados - Task-It!
+
+## Entidades e Relacionamentos
+
+1. **users** (Usuários)
+   - id (PK)
+   - nome
+   - email
+   - senha
+   - criado_em
+
+2. **categories** (Categorias)
+   - id (PK)
+   - nome
+   - user_id (FK -> users.id)
+
+3. **tasks** (Tarefas)
+   - id (PK)
+   - titulo
+   - descricao
+   - vencimento
+   - prioridade
+   - status
+   - recorrente
+   - data_hora_inicio
+   - data_hora_fim
+   - lembrete_minutos
+   - user_id (FK -> users.id)
+   - categoria_id (FK -> categories.id)
+
+4. **checklists** (Itens de Checklist)
+   - id (PK)
+   - conteudo
+   - concluido
+   - tarefa_id (FK -> tasks.id)
+
+5. **tags** (Etiquetas)
+   - id (PK)
+   - nome
+   - user_id (FK -> users.id)
+
+6. **tarefa_tags** (Associação entre Tarefas e Tags)
+   - tarefa_id (PK, FK -> tasks.id)
+   - tag_id (PK, FK -> tags.id)
+
+7. **anotacoes** (Anotações)
+   - id (PK)
+   - conteudo
+   - data
+   - tarefa_id (FK -> tasks.id)
+
+8. **log_atividades** (Log de Atividades)
+   - id (PK)
+   - tipo
+   - data
+   - tarefa_id (FK -> tasks.id)
+   - user_id (FK -> users.id)
+
+## Relacionamentos
+
+- Um usuário pode ter muitas categorias (1:N)
+- Um usuário pode ter muitas tarefas (1:N)
+- Uma categoria pode ter muitas tarefas (1:N)
+- Uma tarefa pode ter muitos itens de checklist (1:N)
+- Uma tarefa pode ter muitas anotações (1:N)
+- Um usuário pode ter muitas tags (1:N)
+- Uma tarefa pode ter muitas tags, e uma tag pode estar em muitas tarefas (N:M) através da tabela tarefa_tags
+- Uma tarefa pode ter muitos registros de log (1:N)
+- Um usuário pode ter muitos registros de log (1:N)
+
+## Instruções para Criar o Diagrama
+
+Use uma ferramenta como dbdiagram.io, Lucidchart ou Draw.io para criar o diagrama visual baseado nesta descrição. Salve o diagrama como "modelo-banco.png" ou "modelo-banco.pdf" na pasta "documentos".
+
+### Exemplo de Código para dbdiagram.io
+
+```
+Table users {
+  id int [pk]
+  nome varchar
+  email varchar [unique]
+  senha varchar
+  criado_em timestamp
+}
+
+Table categories {
+  id int [pk]
+  nome varchar
+  user_id int [ref: > users.id]
+}
+
+Table tasks {
+  id int [pk]
+  titulo varchar
+  descricao text
+  vencimento date
+  prioridade varchar
+  status varchar
+  recorrente varchar
+  data_hora_inicio timestamp
+  data_hora_fim timestamp
+  lembrete_minutos int
+  user_id int [ref: > users.id]
+  categoria_id int [ref: > categories.id]
+}
+
+Table checklists {
+  id int [pk]
+  conteudo varchar
+  concluido boolean
+  tarefa_id int [ref: > tasks.id]
+}
+
+Table tags {
+  id int [pk]
+  nome varchar
+  user_id int [ref: > users.id]
+}
+
+Table tarefa_tags {
+  tarefa_id int [pk, ref: > tasks.id]
+  tag_id int [pk, ref: > tags.id]
+}
+
+Table anotacoes {
+  id int [pk]
+  conteudo text
+  data timestamp
+  tarefa_id int [ref: > tasks.id]
+}
+
+Table log_atividades {
+  id int [pk]
+  tipo varchar
+  data timestamp
+  tarefa_id int [ref: > tasks.id]
+  user_id int [ref: > users.id]
+}
+```
