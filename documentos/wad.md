@@ -169,7 +169,7 @@ CREATE TABLE log_atividades (
   FOREIGN KEY (tarefa_id) REFERENCES tasks(id),
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
-
+```
 ### 3.1.1 BD e Models (Semana 5)
 *Descreva aqui os Models implementados no sistema web*
 
