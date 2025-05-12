@@ -186,7 +186,35 @@ CREATE TABLE log_atividades (
 
 ### 3.3. Wireframes (Semana 03)
 
-*Posicione aqui as imagens do wireframe construído para sua solução e, opcionalmente, o link para acesso (mantenha o link sempre público para visualização).*
+<div align="center">
+  <sub>FIGURA 2 - Tela Principal </sub><br>
+  <img src= "../assets/Dashboard.png" width="100%"
+  alt="Dashboard"><br>
+  <sup>Fonte: Material produzido pelo autor, 2025</sup>
+</div>
+
+**Aqui uma breve descrição da tela principal:
+
+A tela principal do Task-It! é um dashboard funcional que exibe:
+
+- **Cabeçalho** com logo, notificações e perfil do usuário
+- **Menu lateral** com navegação, categorias e tags
+- **Barra de busca** e botão para adicionar novas tarefas
+- **Visão geral** com cards de estatísticas rápidas
+- **Tarefas organizadas por prioridade** (alta, média, baixa)
+
+
+Cada tarefa mostra título, descrição breve, prazo, categoria e tags relevantes. 
+O design prioriza a visualização clara das tarefas mais importantes, permitindo 
+que estudantes e profissionais identifiquem rapidamente o que precisa ser feito primeiro.
+
+<div align="center">
+  <sub>FIGURA 3 - Criação/Edição de tarefas </sub><br>
+  <img src= "../assets/Tarefas.png" width="100%"
+  alt="Tela de tarefas"><br>
+  <sup>Fonte: Material produzido pelo autor, 2025</sup>
+</div>
+
 
 ### 3.4. Guia de estilos (Semana 05)
 
