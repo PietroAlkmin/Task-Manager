@@ -215,6 +215,18 @@ que estudantes e profissionais identifiquem rapidamente o que precisa ser feito 
   <sup>Fonte: Material produzido pelo autor, 2025</sup>
 </div>
 
+ **Tela de Criação/Edição de Tarefas - US01**
+
+A tela de criação de tarefas atende à US01 através de:
+
+- Campo para título da tarefa
+- Área para descrição detalhada
+- Seletor de data/hora para o prazo
+- Opções complementares: prioridade, categoria, tags e checklist
+- Botões de "Cancelar" e "Criar Tarefa"
+
+
+Esta interface permite que estudantes organizem suas atividades acadêmicas de forma rápida e estruturada, com todos os campos necessários para um gerenciamento eficiente.
 
 ### 3.4. Guia de estilos (Semana 05)
 
