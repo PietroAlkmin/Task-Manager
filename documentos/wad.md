@@ -193,7 +193,7 @@ CREATE TABLE log_atividades (
   <sup>Fonte: Material produzido pelo autor, 2025</sup>
 </div>
 
-**Aqui uma breve descrição da tela principal:
+**Aqui uma breve descrição da tela principal:**
 
 A tela principal do Task-It! é um dashboard funcional que exibe:
 
