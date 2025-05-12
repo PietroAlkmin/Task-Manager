@@ -94,7 +94,7 @@ As principais entidades são:
 - **log_atividades**: registra ações realizadas nas tarefas (criação, edição, conclusão).
 - **tarefa_tags**: tabela associativa para o relacionamento N:N entre tarefas e tags.
 
-#### 🧱 Modelo Físico (SQL)
+#### Modelo Físico (SQL)
 
 ```sql
 CREATE TABLE users (
