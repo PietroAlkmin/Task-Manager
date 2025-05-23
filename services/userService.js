@@ -2,6 +2,21 @@
 
 const db = require('../config/db');
 
+// Função para validar dados do usuário
+const validateUserData = (name, email) => {
+  const errors = [];
+  
+  if (!name || name.trim().length < 3) {
+    errors.push('Nome deve ter pelo menos 3 caracteres');
+  }
+  
+  if (!email || !email.includes('@')) {
+    errors.push('Email inválido');
+  }
+  
+  return errors;
+};
+
 // Função para obter todos os usuários
 const getAllUsers = async () => {
   try {
@@ -25,6 +40,11 @@ const getUserById = async (id) => {
 // Função para criar um novo usuário
 const createUser = async (name, email) => {
   try {
+    const errors = validateUserData(name, email);
+    if (errors.length > 0) {
+      throw new Error('Dados inválidos: ' + errors.join(', '));
+    }
+
     const result = await db.query(
       'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *',
       [name, email]
@@ -38,6 +58,11 @@ const createUser = async (name, email) => {
 // Função para atualizar um usuário por ID
 const updateUser = async (id, name, email) => {
   try {
+    const errors = validateUserData(name, email);
+    if (errors.length > 0) {
+      throw new Error('Dados inválidos: ' + errors.join(', '));
+    }
+
     const result = await db.query(
       'UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *',
       [name, email, id]

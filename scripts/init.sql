@@ -1,3 +1,13 @@
+-- Removendo tabelas existentes
+DROP TABLE IF EXISTS log_atividades;
+DROP TABLE IF EXISTS anotacoes;
+DROP TABLE IF EXISTS tarefa_tags;
+DROP TABLE IF EXISTS tags;
+DROP TABLE IF EXISTS checklists;
+DROP TABLE IF EXISTS tasks;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS users;
+
 -- Tabela de Usuários
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,

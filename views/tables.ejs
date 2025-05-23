@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task-It! - Tabelas do Banco de Dados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+        .empty-message {
+            color: #666;
+            font-style: italic;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .error-message {
+            color: #dc3545;
+            padding: 10px;
+            border: 1px solid #dc3545;
+            border-radius: 4px;
+            background-color: #f8d7da;
+            margin-top: 10px;
+        }
+        .refresh-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .refresh-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task-It! - Tabelas do Banco de Dados</h1>
+    
+    <!-- Users Table -->
+    <div class="table-container">
+        <h2>Usuários</h2>
+        <div id="usersTable"></div>
+    </div>
+
+    <!-- Categories Table -->
+    <div class="table-container">
+        <h2>Categorias</h2>
+        <div id="categoriesTable"></div>
+    </div>
+
+    <!-- Tasks Table -->
+    <div class="table-container">
+        <h2>Tarefas</h2>
+        <div id="tasksTable"></div>
+    </div>
+
+    <!-- Tags Table -->
+    <div class="table-container">
+        <h2>Tags</h2>
+        <div id="tagsTable"></div>
+    </div>
+
+    <!-- Checklists Table -->
+    <div class="table-container">
+        <h2>Checklists</h2>
+        <div id="checklistsTable"></div>
+    </div>
+
+    <!-- Task-Tags Table -->
+    <div class="table-container">
+        <h2>Relação Tarefa-Tags</h2>
+        <div id="taskTagsTable"></div>
+    </div>
+
+    <!-- Notes Table -->
+    <div class="table-container">
+        <h2>Anotações</h2>
+        <div id="notesTable"></div>
+    </div>
+
+    <!-- Activity Logs Table -->
+    <div class="table-container">
+        <h2>Log de Atividades</h2>
+        <div id="activityLogsTable"></div>
+    </div>
+
+    <script>
+        function createTable(data, columns) {
+            if (!data || data.length === 0) {
+                return '<p class="empty-message">Nenhum registro encontrado.</p>';
+            }
+
+            let table = '<table><thead><tr>';
+            columns.forEach(col => {
+                table += `<th>${col.label}</th>`;
+            });
+            table += '</tr></thead><tbody>';
+
+            data.forEach(row => {
+                table += '<tr>';
+                columns.forEach(col => {
+                    let value = row[col.field];
+                    if (value instanceof Date) {
+                        value = value.toLocaleString();
+                    }
+                    table += `<td>${value || ''}</td>`;
+                });
+                table += '</tr>';
+            });
+
+            table += '</tbody></table>';
+            return table;
+        }
+
+        async function fetchTableData(endpoint, tableId, columns) {
+            const container = document.getElementById(tableId);
+            container.innerHTML = '<div class="loading">Carregando dados...</div>';
+            
+            try {
+                const response = await fetch(endpoint);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                container.innerHTML = createTable(data, columns);
+            } catch (error) {
+                console.error(`Error fetching ${tableId}:`, error);
+                container.innerHTML = `
+                    <div class="error-message">
+                        Erro ao carregar dados: ${error.message}
+                        <br>
+                        <button class="refresh-button" onclick="refreshTable('${endpoint}', '${tableId}', ${JSON.stringify(columns)})">
+                            Tentar Novamente
+                        </button>
+                    </div>`;
+            }
+        }
+
+        function refreshTable(endpoint, tableId, columns) {
+            fetchTableData(endpoint, tableId, columns);
+        }
+
+        // Fetch data for all tables
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchTableData('/api/users', 'usersTable', [
+                { field: 'id', label: 'ID' },
+                { field: 'nome', label: 'Nome' },
+                { field: 'email', label: 'Email' },
+                { field: 'criado_em', label: 'Criado em' }
+            ]);
+
+            fetchTableData('/api/categories', 'categoriesTable', [
+                { field: 'id', label: 'ID' },
+                { field: 'nome', label: 'Nome' },
+                { field: 'user_id', label: 'ID do Usuário' }
+            ]);
+
+            fetchTableData('/api/tasks', 'tasksTable', [
+                { field: 'id', label: 'ID' },
+                { field: 'titulo', label: 'Título' },
+                { field: 'descricao', label: 'Descrição' },
+                { field: 'vencimento', label: 'Vencimento' },
+                { field: 'prioridade', label: 'Prioridade' },
+                { field: 'status', label: 'Status' }
+            ]);
+
+            fetchTableData('/api/tags', 'tagsTable', [
+                { field: 'id', label: 'ID' },
+                { field: 'nome', label: 'Nome' },
+                { field: 'user_id', label: 'ID do Usuário' }
+            ]);
+
+            fetchTableData('/api/checklists', 'checklistsTable', [
+                { field: 'id', label: 'ID' },
+                { field: 'conteudo', label: 'Conteúdo' },
+                { field: 'concluido', label: 'Concluído' },
+                { field: 'tarefa_id', label: 'ID da Tarefa' }
+            ]);
+
+            fetchTableData('/api/task-tags', 'taskTagsTable', [
+                { field: 'tarefa_id', label: 'ID da Tarefa' },
+                { field: 'tag_id', label: 'ID da Tag' }
+            ]);
+
+            fetchTableData('/api/notes', 'notesTable', [
+                { field: 'id', label: 'ID' },
+                { field: 'conteudo', label: 'Conteúdo' },
+                { field: 'data', label: 'Data' },
+                { field: 'tarefa_id', label: 'ID da Tarefa' }
+            ]);
+
+            fetchTableData('/api/activity-logs', 'activityLogsTable', [
+                { field: 'id', label: 'ID' },
+                { field: 'tipo', label: 'Tipo' },
+                { field: 'data', label: 'Data' },
+                { field: 'tarefa_id', label: 'ID da Tarefa' },
+                { field: 'user_id', label: 'ID do Usuário' }
+            ]);
+        });
+    </script>
+</body>
+</html>

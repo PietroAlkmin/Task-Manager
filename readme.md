@@ -1,6 +1,42 @@
-# Task-It! - Gerenciador de Tarefas
+# Task-It! - Gerenciador de Tarefas (Ponderada M2)
 
 Task-It! é um gerenciador de tarefas voltado para estudantes e profissionais que buscam organizar suas atividades diárias de forma simples e eficiente. O sistema permite a criação de tarefas, definição de prazos e organização por prioridade.
+
+## Arquitetura MVC
+
+Este projeto segue a arquitetura MVC (Model-View-Controller):
+
+- **Model**: Representa a estrutura dos dados e interage com o banco PostgreSQL
+- **View**: Interface do usuário implementada com EJS
+- **Controller**: Gerencia a lógica de negócios e as requisições
+
+## Configuração do Ambiente
+
+1. Clone o repositório:
+```bash
+git clone [URL_DO_REPOSITORIO]
+cd task-it
+```
+
+2. Instale as dependências:
+```bash
+npm install
+```
+
+3. Configure o arquivo `.env`:
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha
+DB_DATABASE=task_it_db
+DB_SSL=false
+```
+
+4. Execute a migração do banco de dados:
+```bash
+npm run init-db
+```
 
 ## Requisitos
 

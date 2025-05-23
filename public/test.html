@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste do Task-It!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #taskList {
+            margin-top: 20px;
+        }
+        .task-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task-It! - Teste do Sistema</h1>
+
+    <div id="userSection">
+        <h2>Criar Usuário</h2>
+        <div class="form-group">
+            <label for="userName">Nome:</label>
+            <input type="text" id="userName" required>
+        </div>
+        <div class="form-group">
+            <label for="userEmail">Email:</label>
+            <input type="email" id="userEmail" required>
+        </div>
+        <button onclick="createUser()">Criar Usuário</button>
+    </div>
+
+    <hr>
+
+    <div id="taskSection">
+        <h2>Criar Tarefa</h2>
+        <div class="form-group">
+            <label for="taskTitle">Título:</label>
+            <input type="text" id="taskTitle" required>
+        </div>
+        <div class="form-group">
+            <label for="taskDescription">Descrição:</label>
+            <input type="text" id="taskDescription">
+        </div>
+        <div class="form-group">
+            <label for="taskPriority">Prioridade:</label>
+            <select id="taskPriority">
+                <option value="baixa">Baixa</option>
+                <option value="media">Média</option>
+                <option value="alta">Alta</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="taskDueDate">Data de Vencimento:</label>
+            <input type="date" id="taskDueDate">
+        </div>
+        <button onclick="createTask()">Criar Tarefa</button>
+    </div>
+
+    <hr>
+
+    <h2>Tarefas Cadastradas</h2>
+    <button onclick="loadTasks()">Atualizar Lista</button>
+    <div id="taskList"></div>
+
+    <script>
+        // Função para criar usuário
+        async function createUser() {
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+
+            try {
+                const response = await fetch('/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Usuário criado com sucesso!');
+                    document.getElementById('userName').value = '';
+                    document.getElementById('userEmail').value = '';
+                } else {
+                    alert('Erro: ' + data.error);
+                }
+            } catch (error) {
+                alert('Erro ao criar usuário: ' + error.message);
+            }
+        }
+
+        // Função para criar tarefa
+        async function createTask() {
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const priority = document.getElementById('taskPriority').value;
+            const due_date = document.getElementById('taskDueDate').value;
+
+            try {
+                const response = await fetch('/tarefas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title,
+                        description,
+                        priority,
+                        due_date
+                    })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Tarefa criada com sucesso!');
+                    document.getElementById('taskTitle').value = '';
+                    document.getElementById('taskDescription').value = '';
+                    document.getElementById('taskDueDate').value = '';
+                    loadTasks();
+                } else {
+                    alert('Erro: ' + data.error);
+                }
+            } catch (error) {
+                alert('Erro ao criar tarefa: ' + error.message);
+            }
+        }
+
+        // Função para carregar tarefas
+        async function loadTasks() {
+            try {
+                const response = await fetch('/tarefas');
+                const tasks = await response.json();
+                
+                const taskList = document.getElementById('taskList');
+                taskList.innerHTML = '';
+
+                tasks.forEach(task => {
+                    const taskElement = document.createElement('div');
+                    taskElement.className = 'task-item';
+                    taskElement.innerHTML = `
+                        <h3>${task.title}</h3>
+                        <p>${task.description || 'Sem descrição'}</p>
+                        <p>Prioridade: ${task.priority}</p>
+                        <p>Vencimento: ${new Date(task.due_date).toLocaleDateString()}</p>
+                        <button onclick="deleteTask('${task.id}')">Excluir</button>
+                    `;
+                    taskList.appendChild(taskElement);
+                });
+            } catch (error) {
+                alert('Erro ao carregar tarefas: ' + error.message);
+            }
+        }
+
+        // Função para deletar tarefa
+        async function deleteTask(id) {
+            if (!confirm('Tem certeza que deseja excluir esta tarefa?')) return;
+
+            try {
+                const response = await fetch(`/tarefas/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('Tarefa excluída com sucesso!');
+                    loadTasks();
+                } else {
+                    const data = await response.json();
+                    alert('Erro: ' + data.error);
+                }
+            } catch (error) {
+                alert('Erro ao excluir tarefa: ' + error.message);
+            }
+        }
+
+        // Carregar tarefas ao iniciar a página
+        loadTasks();
+    </script>
+</body>
+</html>
