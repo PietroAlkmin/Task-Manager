@@ -23,38 +23,102 @@
 </div>
 
 <script>
-  // Função para buscar usuários da API e renderizar na tabela
-  async function fetchUsers() {
+  // Função para buscar e renderizar tarefas
+  async function fetchTasks() {
     try {
-      const response = await fetch('/users');
+      const response = await fetch('/tarefas');
       if (!response.ok) {
-        throw new Error('Erro ao buscar usuários');
+        throw new Error('Erro ao buscar tarefas');
       }
-      const users = await response.json();
-
-      const tableBody = document.querySelector('#usersTable tbody');
-      tableBody.innerHTML = ''; // Limpa o conteúdo anterior
-
-      if (users.length > 0) {
-        users.forEach(user => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${user.id}</td>
-            <td>${user.name}</td>
-            <td>${user.email}</td>
-          `;
-          tableBody.appendChild(row);
-        });
+      const tasks = await response.json();
+      const tasksList = document.getElementById('tasksList');
+      
+      if (tasks.length > 0) {
+        tasksList.innerHTML = tasks.map(task => `
+          <div class="task-item">
+            <h3>${task.titulo}</h3>
+            <p>${task.descricao || 'Sem descrição'}</p>
+            <div class="task-info">
+              <span class="priority ${task.prioridade}">${task.prioridade}</span>
+              <span class="status ${task.status}">${task.status}</span>
+              ${task.vencimento ? `<span class="due-date">Vence em: ${new Date(task.vencimento).toLocaleDateString()}</span>` : ''}
+            </div>
+            <div class="task-actions">
+              <button onclick="updateTaskStatus('${task.id}', 'completed')">Concluir</button>
+              <button onclick="editTask('${task.id}')">Editar</button>
+              <button onclick="deleteTask('${task.id}')">Excluir</button>
+            </div>
+          </div>
+        `).join('');
       } else {
-        tableBody.innerHTML = '<tr><td colspan="3">Nenhum usuário encontrado.</td></tr>';
+        tasksList.innerHTML = '<p>Nenhuma tarefa encontrada.</p>';
       }
     } catch (error) {
       console.error(error);
-      const tableBody = document.querySelector('#usersTable tbody');
-      tableBody.innerHTML = '<tr><td colspan="3">Erro ao carregar usuários.</td></tr>';
+      tasksList.innerHTML = '<p>Erro ao carregar tarefas.</p>';
     }
   }
 
-  // Chama a função ao carregar a página
-  fetchUsers();
+  // Função para criar uma nova tarefa
+  async function createTask() {
+    // TODO: Implementar modal de criação de tarefa
+  }
+
+  // Função para atualizar o status de uma tarefa
+  async function updateTaskStatus(taskId, status) {
+    try {
+      const response = await fetch(`/tarefas/${taskId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status })
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao atualizar tarefa');
+      }
+
+      fetchTasks(); // Recarrega a lista de tarefas
+    } catch (error) {
+      console.error(error);
+      alert('Erro ao atualizar tarefa');
+    }
+  }
+
+  // Função para deletar uma tarefa
+  async function deleteTask(taskId) {
+    if (!confirm('Tem certeza que deseja excluir esta tarefa?')) return;
+
+    try {
+      const response = await fetch(`/tarefas/${taskId}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao deletar tarefa');
+      }
+
+      fetchTasks(); // Recarrega a lista de tarefas
+    } catch (error) {
+      console.error(error);
+      alert('Erro ao deletar tarefa');
+    }
+  }
+
+  // Função para filtrar tarefas
+  function filterTasks() {
+    const priority = document.getElementById('priorityFilter').value;
+    const status = document.getElementById('statusFilter').value;
+    
+    // TODO: Implementar filtros na API e chamar aqui
+  }
+
+  // Adiciona event listeners
+  document.getElementById('addTaskBtn').addEventListener('click', createTask);
+  document.getElementById('priorityFilter').addEventListener('change', filterTasks);
+  document.getElementById('statusFilter').addEventListener('change', filterTasks);
+
+  // Carrega as tarefas ao iniciar a página
+  fetchTasks();
 </script>
