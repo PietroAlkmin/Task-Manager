@@ -55,8 +55,8 @@ class Task {
         // Query de atualização retornando a tarefa atualizada
         const result = await pool.query(
             `UPDATE tasks 
-             SET title = $1, description = $2, due_date = $3,
-                 priority = $4, status = $5, category_id = $6
+            SET title = $1, description = $2, due_date = $3,
+                priority = $4, status = $5, category_id = $6
              WHERE id = $7 AND user_id = $8 RETURNING *`,
             [title, description, due_date, priority, status, category_id, id, userId]
         );
