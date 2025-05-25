@@ -171,18 +171,57 @@ CREATE TABLE log_atividades (
 );
 ```
 ### 3.1.1 BD e Models (Semana 5)
-*Descreva aqui os Models implementados no sistema web*
+
+O sistema Task-It! implementa um conjunto de Models que representam as entidades do banco de dados e encapsulam a lógica de negócios. O principal Model implementado é:
+
+#### Task Model
+O Model `Task` (localizado em `models/Task.js`) é responsável por gerenciar todas as operações relacionadas às tarefas no sistema. Ele implementa os seguintes métodos:
+
+- `getAll()`: Retorna todas as tarefas ordenadas por data de criação
+- `getById(id, userId)`: Busca uma tarefa específica pelo ID e usuário
+- `create(taskData, userId)`: Cria uma nova tarefa no banco de dados
+- `update(id, taskData, userId)`: Atualiza uma tarefa existente
+- `delete(id, userId)`: Remove uma tarefa do banco de dados
+
+O Model utiliza o pool de conexões do PostgreSQL configurado em `config/db.js` para realizar as operações no banco de dados de forma eficiente e segura.
 
 ### 3.2. Arquitetura (Semana 5)
 
-*Posicione aqui o diagrama de arquitetura da sua solução de aplicação web. Atualize sempre que necessário.*
+A aplicação Task-It! segue a arquitetura MVC (Model-View-Controller). O diagrama da arquitetura pode ser visualizado no [Mermaid Live Editor]
+https://bit.ly/3SlqL2I
 
-**Instruções para criação do diagrama de arquitetura**  
-- **Model**: A camada que lida com a lógica de negócios e interage com o banco de dados.
-- **View**: A camada responsável pela interface de usuário.
-- **Controller**: A camada que recebe as requisições, processa as ações e atualiza o modelo e a visualização.
-  
-*Adicione as setas e explicações sobre como os dados fluem entre o Model, Controller e View.*
+
+#### Componentes da Arquitetura
+
+1. **Model (Camada de Dados)**
+   - Implementado em `models/Task.js`
+   - Gerencia a lógica de negócios e operações no banco
+   - Utiliza pool de conexões PostgreSQL
+   - Implementa métodos CRUD para tarefas
+
+2. **View (Camada de Apresentação)**
+   - Templates EJS em `views/pages` e `views/components`
+   - Renderiza a interface do usuário
+   - Implementa interatividade com JavaScript
+   - Exibe dados dinâmicos das tarefas
+
+3. **Controller (Camada de Controle)**
+   - Implementado em `controllers/taskController.js`
+   - Gerencia o fluxo de dados
+   - Processa requisições HTTP
+   - Coordena Model e View
+
+#### Fluxo de Dados
+
+1. O usuário interage com a interface no navegador
+2. O Router direciona a requisição para o Controller apropriado
+3. O Controller processa a requisição e aciona o Model
+4. O Model executa operações no banco PostgreSQL
+5. O Controller recebe os dados do Model
+6. A View é atualizada com os novos dados
+7. O resultado é enviado de volta ao navegador
+
+Esta arquitetura permite uma clara separação de responsabilidades, facilitando a manutenção e escalabilidade do sistema.
 
 ### 3.3. Wireframes (Semana 03)
 
@@ -235,7 +274,30 @@ Esta interface permite que estudantes organizem suas atividades acadêmicas de f
 
 ### 3.5. Protótipo de alta fidelidade (Semana 05)
 
-*Posicione aqui algumas imagens demonstrativas de seu protótipo de alta fidelidade e o link para acesso ao protótipo completo (mantenha o link sempre público para visualização).*
+O protótipo de alta fidelidade do Task-It! foi desenvolvido para demonstrar a experiência final do usuário, com atenção especial aos detalhes visuais e interações.
+
+<div align="center">
+  <sub>FIGURA 4 - Dashboard em Alta Fidelidade</sub><br>
+  <img src="../assets/Dashboard_Alta_Fidelidade.png" width="100%" alt="Dashboard em Alta Fidelidade"><br>
+  <sup>Fonte: Material produzido pelo autor, 2025</sup>
+</div>
+
+O dashboard em alta fidelidade apresenta uma interface moderna e limpa, com cards bem definidos para as tarefas, estatísticas claras e um sistema de navegação intuitivo.
+
+<div align="center">
+  <sub>FIGURA 5 - Tela de Calendário</sub><br>
+  <img src="../assets/Calendário_Alta_Fidelidade.png" width="100%" alt="Calendário em Alta Fidelidade"><br>
+  <sup>Fonte: Material produzido pelo autor, 2025</sup>
+</div>
+
+A visualização em calendário permite aos usuários ter uma visão temporal clara de suas tarefas, com indicadores visuais de prioridade e status.
+
+<div align="center">  <sub>FIGURA 6 - Tela de Criação de Tarefas em Alta Fidelidade</sub><br>
+  <img src="../assets/Task_Creation.png" width="100%" alt="Tela de Criação de Tarefas"><br>
+  <sup>Fonte: Material produzido pelo autor, 2025</sup>
+</div>
+
+A tela de criação de tarefas em alta fidelidade apresenta um formulário intuitivo com todos os campos necessários: título, descrição, data/hora, prioridade, categoria, tags e checklist. O design limpo e organizado torna o processo de criação de tarefas simples e eficiente, atendendo diretamente à US01.
 
 ### 3.6. WebAPI e endpoints (Semana 05)
 
