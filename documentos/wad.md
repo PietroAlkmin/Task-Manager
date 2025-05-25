@@ -187,7 +187,7 @@ O Model utiliza o pool de conexões do PostgreSQL configurado em `config/db.js` 
 
 ### 3.2. Arquitetura (Semana 5)
 
-A aplicação Task-It! segue a arquitetura MVC (Model-View-Controller). O diagrama da arquitetura pode ser visualizado no [Mermaid Live Editor]
+A aplicação Task-It! segue a arquitetura MVC. O diagrama da arquitetura pode ser visualizado no [Mermaid Live Editor]
 https://bit.ly/3SlqL2I
 
 
