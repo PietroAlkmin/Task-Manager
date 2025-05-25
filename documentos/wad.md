@@ -269,8 +269,45 @@ Esta interface permite que estudantes organizem suas atividades acadêmicas de f
 
 ### 3.4. Guia de estilos (Semana 05)
 
-*Descreva aqui orientações gerais para o leitor sobre como utilizar os componentes do guia de estilos de sua solução.*
+#### Cores
+- **Primária**: #8B3DFF (Roxo) - Usado em botões principais, links e elementos de destaque
+- **Secundária**: #FFFFFF (Branco) - Usado em cards e elementos de interface
+- **Fundo**: #FAFAFA (Cinza muito claro) - Cor de fundo principal
+- **Texto**: #2D2D2D (Cinza escuro) - Texto principal
+- **Status**:
+  - Alta Prioridade: #FFE2E2 (Vermelho claro) com texto #FF3D3D
+  - Média Prioridade: #FFF8E2 (Amarelo claro) com texto #FFB930
+  - Baixa Prioridade: #E8F1FF (Azul claro) com texto #3D8BFF
 
+#### Tipografia
+- **Título Principal**: Inter Bold, 24px
+- **Subtítulos**: Inter Medium, 18px
+- **Texto**: Inter Regular, 14px
+- **Botões**: Inter Semi-Bold, 16px
+
+#### Componentes
+1. **Botões**
+   - Primário: Fundo roxo (#8B3DFF), texto branco, border-radius: 8px
+   - Secundário: Fundo branco, texto roxo, borda roxa (#8B3DFF)
+   - Hover: Opacidade 0.9
+
+2. **Cards**
+   - Background: Branco
+   - Border-radius: 12px
+   - Shadow: 0px 4px 12px rgba(0,0,0,0.1)
+   - Padding: 16px
+
+3. **Campos de Input**
+   - Border-radius: 6px
+   - Border: 1px solid #E1E4E8
+   - Padding: 12px
+   - Focus: Borda roxa (#8B3DFF)
+
+4. **Tags**
+   - Border-radius: 16px
+   - Padding: 4px 12px
+   - Cores variadas com opacidade 0.2
+   - Texto na cor principal da tag
 
 ### 3.5. Protótipo de alta fidelidade (Semana 05)
 
