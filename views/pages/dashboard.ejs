@@ -27,7 +27,7 @@
                         <input type="text" placeholder="Buscar tarefas..." id="searchInput" onkeyup="searchTasks(this.value)">
                     </div>
                 </div>
-                <button class="btn btn-primary" onclick="window.location.href='/tasks/new'">
+                <button class="btn btn-primary btn-ripple hover-lift transition-all" onclick="window.location.href='/tasks/new'">
                     <i class="fas fa-plus"></i>
                     Nova Tarefa
                 </button>
@@ -44,59 +44,43 @@
         <div class="content-body">
             <!-- Cards de Estatísticas -->
             <div class="stats-grid">
-                <div class="stat-card">
+                <div class="stat-card animate-fade-in-up hover-lift transition-all">
                     <div class="stat-icon">
                         <i class="fas fa-tasks"></i>
                     </div>
                     <div class="stat-content">
                         <h3 class="stat-number" id="totalTasks">7</h3>
                         <p class="stat-label">Total de Tarefas</p>
-                        <span class="stat-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            +2 esta semana
-                        </span>
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card animate-fade-in-up delay-100 hover-lift transition-all">
                     <div class="stat-icon pending">
                         <i class="fas fa-clock"></i>
                     </div>
                     <div class="stat-content">
                         <h3 class="stat-number" id="pendingTasks">4</h3>
                         <p class="stat-label">Pendentes</p>
-                        <span class="stat-change neutral">
-                            <i class="fas fa-minus"></i>
-                            Sem mudanças
-                        </span>
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card animate-fade-in-up delay-200 hover-lift transition-all">
                     <div class="stat-icon completed">
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <div class="stat-content">
                         <h3 class="stat-number" id="completedTasks">2</h3>
                         <p class="stat-label">Concluídas</p>
-                        <span class="stat-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            +1 hoje
-                        </span>
                     </div>
                 </div>
 
-                <div class="stat-card">
-                    <div class="stat-icon overdue">
+                <div class="stat-card animate-fade-in-up delay-300 hover-lift transition-all">
+                    <div class="stat-icon overdue animate-glow">
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
                     <div class="stat-content">
                         <h3 class="stat-number" id="overdueTasks">1</h3>
                         <p class="stat-label">Atrasadas</p>
-                        <span class="stat-change negative">
-                            <i class="fas fa-arrow-down"></i>
-                            Atenção necessária
-                        </span>
                     </div>
                 </div>
             </div>
@@ -106,7 +90,7 @@
                 <!-- Coluna Esquerda -->
                 <div class="dashboard-left">
                     <!-- Tarefas Recentes -->
-                    <section class="dashboard-section">
+                    <section class="dashboard-section animate-fade-in-left delay-400 hover-lift transition-all">
                         <div class="section-header">
                             <h2 class="section-title">
                                 <i class="fas fa-list"></i>
@@ -206,8 +190,8 @@
                         </div>
                     </section>
                 </div>
-            </div>
         </div>
+    </div>
     </main>
 </div>
 

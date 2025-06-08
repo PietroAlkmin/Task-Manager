@@ -65,12 +65,13 @@
                 <form id="loginForm" class="form">
                     <div class="form-group">
                         <label for="loginEmail" class="form-label">Email</label>
-                        <input 
-                            type="email" 
-                            id="loginEmail" 
-                            name="email" 
-                            class="form-input" 
+                        <input
+                            type="email"
+                            id="loginEmail"
+                            name="email"
+                            class="form-input"
                             placeholder="seu@email.com"
+                            value="pietro@inteli.edu.br"
                             required
                         >
                         <div class="form-error" id="loginEmailError"></div>
@@ -79,12 +80,13 @@
                     <div class="form-group">
                         <label for="loginPassword" class="form-label">Senha</label>
                         <div class="password-input">
-                            <input 
-                                type="password" 
-                                id="loginPassword" 
-                                name="password" 
-                                class="form-input" 
+                            <input
+                                type="password"
+                                id="loginPassword"
+                                name="password"
+                                class="form-input"
                                 placeholder="Sua senha"
+                                value="123456"
                                 required
                             >
                             <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
@@ -103,16 +105,22 @@
                         <a href="#" class="forgot-password">Esqueceu a senha?</a>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-full">
+                    <button type="submit" class="btn btn-primary btn-full" onclick="handleLoginClick(event)">
                         <i class="fas fa-sign-in-alt"></i>
                         Entrar
                     </button>
                 </form>
 
                 <div class="form-footer">
-                    <p>Não tem uma conta? 
+                    <p>Não tem uma conta?
                         <a href="#" onclick="switchToRegister()">Cadastre-se</a>
                     </p>
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="testLogin()" style="margin-top: 10px;">
+                        🔧 Teste Login Debug
+                    </button>
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="clearAuth()" style="margin-top: 5px;">
+                        🗑️ Limpar Auth
+                    </button>
                 </div>
             </div>
 
@@ -226,8 +234,108 @@
     <script>
         // Initialize auth page
         document.addEventListener('DOMContentLoaded', function() {
-            AuthManager.init();
+            // Force stay on auth page for testing
+            window.stayOnAuthPage = true;
+
+            if (window.authManager) {
+                window.authManager.init();
+            }
+
+            // Debug: adicionar listener extra no formulário
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    console.log('🔥 FORM SUBMIT EVENT CAPTURADO!', e);
+                    console.log('🔥 Form data:', new FormData(e.target));
+                    console.log('🔥 Email value:', document.getElementById('loginEmail').value);
+                    console.log('🔥 Password value:', document.getElementById('loginPassword').value);
+                });
+            }
         });
+
+        // Função para limpar dados de autenticação
+        function clearAuth() {
+            console.log('Limpando dados de autenticação...');
+
+            // Limpar localStorage
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('current_user');
+            localStorage.removeItem('lastRefresh');
+            localStorage.removeItem('pendingChanges');
+
+            // Limpar sessionStorage também
+            sessionStorage.clear();
+
+            // Limpar API
+            if (window.API) {
+                window.API.token = null;
+                window.API.user = null;
+            }
+
+            // Limpar flags
+            window.skipAuthCheck = false;
+            window.stayOnAuthPage = true;
+
+            if (window.Toast) {
+                Toast.info('Dados de autenticação limpos');
+            } else {
+                alert('Dados de autenticação limpos');
+            }
+
+            // Recarregar página após um delay
+            setTimeout(() => {
+                location.reload();
+            }, 500);
+        }
+
+        // Debug function for testing
+        function testLogin() {
+            console.log('testLogin chamado');
+            API.login('pietro@inteli.edu.br', '123456')
+                .then(response => {
+                    console.log('Login test response:', response);
+                    if (response.success) {
+                        console.log('Redirecionando para dashboard...');
+                        window.location.href = '/';
+                    }
+                })
+                .catch(error => {
+                    console.error('Login test error:', error);
+                });
+        }
+
+        // Função alternativa para o botão de login
+        function handleLoginClick(event) {
+            console.log('🚀 handleLoginClick chamado!', event);
+
+            // Não prevenir o submit ainda, deixar o form handler normal tentar primeiro
+            // event.preventDefault();
+
+            // Pegar valores diretamente dos inputs
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            console.log('🚀 Valores capturados:', { email, password });
+
+            // Se o form handler normal falhar, esta função pode ser usada como backup
+            setTimeout(() => {
+                console.log('🚀 Backup login attempt...');
+                if (email && password) {
+                    API.login(email, password)
+                        .then(response => {
+                            console.log('🚀 Backup login response:', response);
+                            if (response.success) {
+                                Toast.success('Login realizado com sucesso!');
+                                window.skipAuthCheck = true;
+                                window.location.href = '/';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('🚀 Backup login error:', error);
+                        });
+                }
+            }, 100);
+        }
     </script>
 </body>
 </html>

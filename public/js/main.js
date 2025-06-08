@@ -245,26 +245,47 @@ function handleVisibilityChange() {
 
 // ===== AUTENTICAÇÃO =====
 function checkAuthentication() {
+    // Skip auth check if explicitly disabled
+    if (window.skipAuthCheck) {
+        console.log('checkAuthentication - pulando verificação (skipAuthCheck=true)');
+        return true;
+    }
+
     const protectedPaths = ['/', '/dashboard', '/calendar', '/tasks'];
     const currentPath = window.location.pathname;
-    
+
+    console.log('checkAuthentication - currentPath:', currentPath);
+    console.log('checkAuthentication - isAuthenticated:', API.isAuthenticated());
+
     // Check if current page requires authentication
-    const isProtectedPage = protectedPaths.some(path => 
+    const isProtectedPage = protectedPaths.some(path =>
         currentPath === path || currentPath.startsWith(path + '/')
     );
-    
+
+    console.log('checkAuthentication - isProtectedPage:', isProtectedPage);
+
     if (isProtectedPage && !API.isAuthenticated()) {
+        console.log('Redirecionando para /auth - usuário não autenticado');
         // Redirect to auth page
         window.location.href = '/auth';
         return false;
     }
-    
+
     // If on auth page and already authenticated, redirect to dashboard
-    if (currentPath === '/auth' && API.isAuthenticated()) {
-        window.location.href = '/';
+    // BUT only if not explicitly staying on auth page
+    if (currentPath === '/auth' && API.isAuthenticated() && !window.stayOnAuthPage) {
+        console.log('Redirecionando para / - usuário já autenticado');
+
+        // Add a small delay to allow user to see the page and potentially clear auth
+        setTimeout(() => {
+            if (!window.stayOnAuthPage) {
+                window.location.href = '/';
+            }
+        }, 1000);
         return false;
     }
-    
+
+    console.log('checkAuthentication - tudo ok, continuando');
     return true;
 }
 

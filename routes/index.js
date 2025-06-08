@@ -11,8 +11,8 @@ router.use(express.static(path.join(__dirname, '../public')));
 // Rotas da API para as tabelas
 router.use('/api', tableRoutes);
 
-// Rota principal
-router.get('/', (req, res) => {
+// Rota para página de demonstração (movida para /demo)
+router.get('/demo', (req, res) => {
   res.render('pages/page1', {
     pageTitle: 'Task-It! - Gerenciador de Tarefas',
     content: '../pages/page1'
@@ -179,7 +179,7 @@ router.get('/auth', (req, res) => {
     });
 });
 
-// Dashboard principal
+// Dashboard principal (rota raiz)
 router.get('/', (req, res) => {
     res.render('pages/dashboard', {
         title: 'Task-It! - Dashboard',

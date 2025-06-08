@@ -38,6 +38,9 @@ class Dashboard {
             // Setup event listeners
             this.setupEventListeners();
 
+            // Animate stat cards
+            this.animateStatCards();
+
             // Hide loading
             Loading.hide();
 
@@ -67,7 +70,6 @@ class Dashboard {
                 this.stats = response.data;
                 this.updateStatsDisplay();
                 this.updateSidebarBadges();
-                this.updateProgressCircle();
             }
         } catch (error) {
             console.error('Error loading stats:', error);
@@ -184,27 +186,7 @@ class Dashboard {
         });
     }
 
-    updateProgressCircle() {
-        const total = this.stats.total || 0;
-        const completed = this.stats.concluidas || 0;
-        const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-        const circle = DOM.find('.progress-ring-fill');
-        const percentageText = DOM.find('.progress-percentage');
-        const completedTodayText = DOM.$('completedToday');
-        const pendingTodayText = DOM.$('pendingToday');
-
-        if (circle) {
-            const circumference = 2 * Math.PI * 34; // radius = 34
-            const offset = circumference - (percentage / 100) * circumference;
-            circle.style.strokeDasharray = circumference;
-            circle.style.strokeDashoffset = offset;
-        }
-
-        if (percentageText) percentageText.textContent = `${percentage}%`;
-        if (completedTodayText) completedTodayText.textContent = completed;
-        if (pendingTodayText) pendingTodayText.textContent = this.stats.pendentes || 0;
-    }
 
     renderTasks() {
         const container = DOM.$('tasksContainer');
@@ -434,6 +416,56 @@ class Dashboard {
     async refreshData() {
         Loading.show('Atualizando dados...');
         await this.init();
+    }
+
+    // ===== ANIMAÇÕES =====
+    animateStatCards() {
+        // Animate numbers counting up
+        const statNumbers = document.querySelectorAll('.stat-number');
+
+        statNumbers.forEach((element, index) => {
+            const finalValue = parseInt(element.textContent) || 0;
+            element.textContent = '0';
+
+            // Stagger animation start
+            setTimeout(() => {
+                this.animateNumber(element, 0, finalValue, 1000);
+            }, index * 200);
+        });
+
+        // Animate cards entrance
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 150);
+        });
+    }
+
+    animateNumber(element, start, end, duration) {
+        const startTime = performance.now();
+
+        const updateNumber = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Easing function for smooth animation
+            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+            const currentValue = Math.round(start + (end - start) * easeOutQuart);
+
+            element.textContent = currentValue;
+
+            if (progress < 1) {
+                requestAnimationFrame(updateNumber);
+            }
+        };
+
+        requestAnimationFrame(updateNumber);
     }
 }
 

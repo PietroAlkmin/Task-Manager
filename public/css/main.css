@@ -134,7 +134,7 @@ body {
 }
 
 .sidebar {
-    width: 280px;
+    width: 240px;
     background: var(--secondary-color);
     border-right: 1px solid var(--border-color);
     display: flex;
@@ -149,7 +149,7 @@ body {
 
 .main-content {
     flex: 1;
-    margin-left: 280px;
+    margin-left: 240px;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -169,7 +169,7 @@ body {
 
 .content-body {
     flex: 1;
-    padding: var(--spacing-xl);
+    padding: 0 1rem;
     overflow-y: auto;
 }
 
