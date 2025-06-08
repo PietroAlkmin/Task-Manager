@@ -1,0 +1,208 @@
+<!-- =====================================================
+     TASK-IT! - SIDEBAR DE NAVEGAÇÃO
+     Seguindo protótipos de alta fidelidade
+     ===================================================== -->
+
+<aside class="sidebar" id="sidebar">
+    <!-- Logo e Branding -->
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <i class="fas fa-tasks"></i>
+            <h2>Task-It!</h2>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- Perfil do Usuário -->
+    <div class="sidebar-profile">
+        <div class="profile-avatar">
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-info">
+            <h3 class="profile-name" id="userName">Pietro Alkmin</h3>
+            <p class="profile-email" id="userEmail">pietro@inteli.edu.br</p>
+        </div>
+        <div class="profile-dropdown">
+            <button class="btn-icon" onclick="toggleProfileMenu()">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Menu de Perfil (Dropdown) -->
+    <div class="profile-menu" id="profileMenu">
+        <a href="#" class="profile-menu-item">
+            <i class="fas fa-user-cog"></i>
+            <span>Configurações</span>
+        </a>
+        <a href="#" class="profile-menu-item">
+            <i class="fas fa-bell"></i>
+            <span>Notificações</span>
+        </a>
+        <div class="profile-menu-divider"></div>
+        <a href="#" class="profile-menu-item" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Sair</span>
+        </a>
+    </div>
+
+    <!-- Navegação Principal -->
+    <nav class="sidebar-nav">
+        <div class="nav-section">
+            <h4 class="nav-section-title">Principal</h4>
+            <ul class="nav-list">
+                <li class="nav-item active">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                        <span class="nav-badge" id="totalTasksBadge">7</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/calendar" class="nav-link">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Calendário</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/tasks/new" class="nav-link">
+                        <i class="fas fa-plus"></i>
+                        <span>Nova Tarefa</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="nav-section">
+            <h4 class="nav-section-title">Filtros</h4>
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="filterTasks('all')">
+                        <i class="fas fa-list"></i>
+                        <span>Todas</span>
+                        <span class="nav-badge" id="allTasksBadge">7</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="filterTasks('pending')">
+                        <i class="fas fa-clock"></i>
+                        <span>Pendentes</span>
+                        <span class="nav-badge pending" id="pendingTasksBadge">4</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="filterTasks('progress')">
+                        <i class="fas fa-play"></i>
+                        <span>Em Andamento</span>
+                        <span class="nav-badge progress" id="progressTasksBadge">1</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="filterTasks('completed')">
+                        <i class="fas fa-check"></i>
+                        <span>Concluídas</span>
+                        <span class="nav-badge completed" id="completedTasksBadge">2</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-header">
+                <h4 class="nav-section-title">Categorias</h4>
+                <button class="btn-icon btn-sm" onclick="openCategoryModal()" title="Adicionar categoria">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <ul class="nav-list" id="categoriesList">
+                <!-- Categorias serão carregadas dinamicamente -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="filterByCategory(5)">
+                        <div class="category-color" style="background: #8B3DFF;"></div>
+                        <span>Inteli</span>
+                        <span class="nav-badge">3</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="filterByCategory(1)">
+                        <div class="category-color" style="background: #FF6B6B;"></div>
+                        <span>Estudos</span>
+                        <span class="nav-badge">2</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="filterByCategory(2)">
+                        <div class="category-color" style="background: #4ECDC4;"></div>
+                        <span>Trabalho</span>
+                        <span class="nav-badge">1</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-header">
+                <h4 class="nav-section-title">Tags</h4>
+                <button class="btn-icon btn-sm" onclick="openTagModal()" title="Adicionar tag">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div class="tags-list" id="tagsList">
+                <!-- Tags serão carregadas dinamicamente -->
+                <span class="tag tag-filter" onclick="filterByTag(1)" style="background: #FF3D3D; color: white;">
+                    Urgente
+                </span>
+                <span class="tag tag-filter" onclick="filterByTag(2)" style="background: #FFB930; color: white;">
+                    Importante
+                </span>
+                <span class="tag tag-filter" onclick="filterByTag(6)" style="background: #E74C3C; color: white;">
+                    Entrega
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Estatísticas Rápidas -->
+    <div class="sidebar-stats">
+        <h4 class="stats-title">Progresso Hoje</h4>
+        <div class="progress-circle" id="dailyProgress">
+            <svg class="progress-ring" width="80" height="80">
+                <circle class="progress-ring-circle" stroke="#E1E4E8" stroke-width="6" fill="transparent" r="34" cx="40" cy="40"/>
+                <circle class="progress-ring-circle progress-ring-fill" stroke="#8B3DFF" stroke-width="6" fill="transparent" r="34" cx="40" cy="40" style="stroke-dasharray: 213.628; stroke-dashoffset: 128.177;"/>
+            </svg>
+            <div class="progress-text">
+                <span class="progress-percentage">40%</span>
+                <span class="progress-label">Concluído</span>
+            </div>
+        </div>
+        <div class="stats-details">
+            <div class="stat-item">
+                <span class="stat-value" id="completedToday">2</span>
+                <span class="stat-label">Concluídas</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="pendingToday">3</span>
+                <span class="stat-label">Pendentes</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botão de Upgrade (Premium) -->
+    <div class="sidebar-upgrade">
+        <div class="upgrade-card">
+            <div class="upgrade-icon">
+                <i class="fas fa-crown"></i>
+            </div>
+            <h4>Upgrade para Pro</h4>
+            <p>Desbloqueie recursos avançados</p>
+            <button class="btn btn-primary btn-sm btn-full">
+                Upgrade
+            </button>
+        </div>
+    </div>
+</aside>
+
+<!-- Overlay para mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>

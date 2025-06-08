@@ -1,0 +1,363 @@
+/* =====================================================
+   TASK-IT! - CSS DE AUTENTICAÇÃO
+   Login e Cadastro
+   ===================================================== */
+
+.auth-body {
+    background: linear-gradient(135deg, #8B3DFF 0%, #6B2FD1 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+}
+
+.auth-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 1200px;
+    width: 100%;
+    background: var(--secondary-color);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    min-height: 600px;
+}
+
+/* ===== LADO ESQUERDO - BRANDING ===== */
+.auth-brand {
+    background: linear-gradient(135deg, #8B3DFF 0%, #6B2FD1 100%);
+    color: var(--secondary-color);
+    padding: var(--spacing-2xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-brand::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+    animation: float 20s linear infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-100px) rotate(360deg); }
+}
+
+.brand-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 400px;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.brand-logo i {
+    font-size: 48px;
+    color: var(--secondary-color);
+}
+
+.brand-logo h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin: 0;
+}
+
+.brand-subtitle {
+    font-size: var(--font-size-lg);
+    opacity: 0.9;
+    margin-bottom: var(--spacing-2xl);
+    line-height: 1.4;
+}
+
+.brand-features {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    font-size: var(--font-size-md);
+    opacity: 0.9;
+}
+
+.feature i {
+    font-size: var(--font-size-lg);
+    width: 24px;
+    text-align: center;
+}
+
+/* ===== LADO DIREITO - FORMULÁRIOS ===== */
+.auth-forms {
+    padding: var(--spacing-2xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.auth-form {
+    width: 100%;
+    max-width: 400px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(20px);
+    transition: all var(--transition-normal);
+    position: absolute;
+}
+
+.auth-form.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    position: relative;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.form-header h2 {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: var(--spacing-sm);
+}
+
+.form-header p {
+    color: var(--text-light);
+    font-size: var(--font-size-md);
+}
+
+.form {
+    width: 100%;
+}
+
+/* ===== CAMPOS DE SENHA COM TOGGLE ===== */
+.password-input {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.password-toggle:hover {
+    color: var(--text-color);
+    background: var(--background-color);
+}
+
+/* ===== CHECKBOX CUSTOMIZADO ===== */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    color: var(--text-light);
+    user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    position: relative;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--secondary-color);
+    font-size: 10px;
+}
+
+/* ===== OPÇÕES DO FORMULÁRIO ===== */
+.form-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.forgot-password {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    transition: all var(--transition-fast);
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+/* ===== RODAPÉ DO FORMULÁRIO ===== */
+.form-footer {
+    text-align: center;
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-xl);
+    border-top: 1px solid var(--border-light);
+}
+
+.form-footer p {
+    color: var(--text-light);
+    font-size: var(--font-size-sm);
+}
+
+.form-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 1024px) {
+    .auth-container {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+    }
+    
+    .auth-brand {
+        padding: var(--spacing-xl);
+        min-height: 200px;
+    }
+    
+    .brand-logo h1 {
+        font-size: 28px;
+    }
+    
+    .brand-subtitle {
+        font-size: var(--font-size-md);
+    }
+    
+    .brand-features {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .auth-body {
+        padding: var(--spacing-md);
+    }
+    
+    .auth-container {
+        border-radius: var(--radius-lg);
+    }
+    
+    .auth-forms {
+        padding: var(--spacing-xl);
+    }
+    
+    .form-header h2 {
+        font-size: 20px;
+    }
+    
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-forms {
+        padding: var(--spacing-lg);
+    }
+    
+    .brand-logo {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .brand-logo i {
+        font-size: 36px;
+    }
+    
+    .brand-logo h1 {
+        font-size: 24px;
+    }
+}
+
+/* ===== ANIMAÇÕES ===== */
+.auth-form.slide-out-left {
+    animation: slideOutLeft 0.3s ease forwards;
+}
+
+.auth-form.slide-in-right {
+    animation: slideInRight 0.3s ease forwards;
+}
+
+@keyframes slideOutLeft {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

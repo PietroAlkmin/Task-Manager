@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task-It! - Login</title>
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth-body">
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <div class="auth-container">
+        <!-- Left Side - Branding -->
+        <div class="auth-brand">
+            <div class="brand-content">
+                <div class="brand-logo">
+                    <i class="fas fa-tasks"></i>
+                    <h1>Task-It!</h1>
+                </div>
+                <p class="brand-subtitle">Organize suas tarefas de forma simples e eficiente</p>
+                
+                <div class="brand-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Gerencie suas tarefas</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Visualize em calendário</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bell"></i>
+                        <span>Receba notificações</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-tags"></i>
+                        <span>Organize por categorias</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Auth Forms -->
+        <div class="auth-forms">
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form active">
+                <div class="form-header">
+                    <h2>Bem-vindo de volta!</h2>
+                    <p>Entre na sua conta para continuar</p>
+                </div>
+
+                <form id="loginForm" class="form">
+                    <div class="form-group">
+                        <label for="loginEmail" class="form-label">Email</label>
+                        <input 
+                            type="email" 
+                            id="loginEmail" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="seu@email.com"
+                            required
+                        >
+                        <div class="form-error" id="loginEmailError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword" class="form-label">Senha</label>
+                        <div class="password-input">
+                            <input 
+                                type="password" 
+                                id="loginPassword" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="Sua senha"
+                                required
+                            >
+                            <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-error" id="loginPasswordError"></div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="remember">
+                            <span class="checkmark"></span>
+                            Lembrar de mim
+                        </label>
+                        <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Entrar
+                    </button>
+                </form>
+
+                <div class="form-footer">
+                    <p>Não tem uma conta? 
+                        <a href="#" onclick="switchToRegister()">Cadastre-se</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="auth-form">
+                <div class="form-header">
+                    <h2>Crie sua conta</h2>
+                    <p>Comece a organizar suas tarefas hoje</p>
+                </div>
+
+                <form id="registerForm" class="form">
+                    <div class="form-group">
+                        <label for="registerName" class="form-label required">Nome completo</label>
+                        <input 
+                            type="text" 
+                            id="registerName" 
+                            name="nome" 
+                            class="form-input" 
+                            placeholder="Seu nome completo"
+                            required
+                        >
+                        <div class="form-error" id="registerNameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerEmail" class="form-label required">Email</label>
+                        <input 
+                            type="email" 
+                            id="registerEmail" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="seu@email.com"
+                            required
+                        >
+                        <div class="form-error" id="registerEmailError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerPassword" class="form-label required">Senha</label>
+                        <div class="password-input">
+                            <input 
+                                type="password" 
+                                id="registerPassword" 
+                                name="senha" 
+                                class="form-input" 
+                                placeholder="Mínimo 6 caracteres"
+                                required
+                                minlength="6"
+                            >
+                            <button type="button" class="password-toggle" onclick="togglePassword('registerPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-help">A senha deve ter pelo menos 6 caracteres</div>
+                        <div class="form-error" id="registerPasswordError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label required">Confirmar senha</label>
+                        <div class="password-input">
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                class="form-input" 
+                                placeholder="Confirme sua senha"
+                                required
+                            >
+                            <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-error" id="confirmPasswordError"></div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="terms" required>
+                            <span class="checkmark"></span>
+                            Aceito os <a href="#" target="_blank">termos de uso</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-user-plus"></i>
+                        Criar conta
+                    </button>
+                </form>
+
+                <div class="form-footer">
+                    <p>Já tem uma conta? 
+                        <a href="#" onclick="switchToLogin()">Faça login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-spinner hidden">
+        <div class="spinner"></div>
+        <p>Processando...</p>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/js/utils.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/components.js"></script>
+    <script src="/js/auth.js"></script>
+    
+    <script>
+        // Initialize auth page
+        document.addEventListener('DOMContentLoaded', function() {
+            AuthManager.init();
+        });
+    </script>
+</body>
+</html>

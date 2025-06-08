@@ -1,0 +1,247 @@
+<!-- =====================================================
+     TASK-IT! - DASHBOARD PRINCIPAL
+     Seguindo protótipos de alta fidelidade
+     ===================================================== -->
+
+<div class="main-layout">
+    <!-- Sidebar -->
+    <%- include('../partials/sidebar') %>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <button class="btn-icon sidebar-mobile-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <h1>Dashboard</h1>
+                    <p class="header-subtitle">Bem-vindo de volta! Aqui está o resumo das suas tarefas.</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-search">
+                    <div class="search-input-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Buscar tarefas..." id="searchInput" onkeyup="searchTasks(this.value)">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="window.location.href='/tasks/new'">
+                    <i class="fas fa-plus"></i>
+                    Nova Tarefa
+                </button>
+                <div class="header-notifications">
+                    <button class="btn-icon" onclick="toggleNotifications()" title="Notificações">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Corpo do Conteúdo -->
+        <div class="content-body">
+            <!-- Cards de Estatísticas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="totalTasks">7</h3>
+                        <p class="stat-label">Total de Tarefas</p>
+                        <span class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +2 esta semana
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="pendingTasks">4</h3>
+                        <p class="stat-label">Pendentes</p>
+                        <span class="stat-change neutral">
+                            <i class="fas fa-minus"></i>
+                            Sem mudanças
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon completed">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="completedTasks">2</h3>
+                        <p class="stat-label">Concluídas</p>
+                        <span class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +1 hoje
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon overdue">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="overdueTasks">1</h3>
+                        <p class="stat-label">Atrasadas</p>
+                        <span class="stat-change negative">
+                            <i class="fas fa-arrow-down"></i>
+                            Atenção necessária
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção Principal -->
+            <div class="dashboard-main">
+                <!-- Coluna Esquerda -->
+                <div class="dashboard-left">
+                    <!-- Tarefas Recentes -->
+                    <section class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <i class="fas fa-list"></i>
+                                Tarefas Recentes
+                            </h2>
+                            <div class="section-actions">
+                                <div class="view-toggle">
+                                    <button class="btn-icon active" onclick="setTaskView('list')" title="Visualização em lista">
+                                        <i class="fas fa-list"></i>
+                                    </button>
+                                    <button class="btn-icon" onclick="setTaskView('grid')" title="Visualização em grade">
+                                        <i class="fas fa-th"></i>
+                                    </button>
+                                </div>
+                                <button class="btn btn-ghost btn-sm" onclick="window.location.href='/tasks'">
+                                    Ver todas
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="tasks-container" id="tasksContainer">
+                            <!-- Tarefas serão carregadas dinamicamente -->
+                            <div class="task-loading">
+                                <div class="spinner"></div>
+                                <p>Carregando tarefas...</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Coluna Direita -->
+                <div class="dashboard-right">
+                    <!-- Tarefas Próximas do Vencimento -->
+                    <section class="dashboard-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <i class="fas fa-clock"></i>
+                                Próximas do Vencimento
+                            </h3>
+                        </div>
+                        <div class="upcoming-tasks" id="upcomingTasks">
+                            <!-- Tarefas próximas serão carregadas dinamicamente -->
+                        </div>
+                    </section>
+
+                    <!-- Progresso por Categoria -->
+                    <section class="dashboard-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <i class="fas fa-chart-pie"></i>
+                                Progresso por Categoria
+                            </h3>
+                        </div>
+                        <div class="category-progress" id="categoryProgress">
+                            <!-- Progresso será carregado dinamicamente -->
+                        </div>
+                    </section>
+
+                    <!-- Atividade Recente -->
+                    <section class="dashboard-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <i class="fas fa-history"></i>
+                                Atividade Recente
+                            </h3>
+                        </div>
+                        <div class="activity-feed" id="activityFeed">
+                            <!-- Atividades serão carregadas dinamicamente -->
+                        </div>
+                    </section>
+
+                    <!-- Quick Actions -->
+                    <section class="dashboard-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <i class="fas fa-bolt"></i>
+                                Ações Rápidas
+                            </h3>
+                        </div>
+                        <div class="quick-actions">
+                            <button class="quick-action-btn" onclick="window.location.href='/tasks/new'">
+                                <i class="fas fa-plus"></i>
+                                <span>Nova Tarefa</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="openCategoryModal()">
+                                <i class="fas fa-folder-plus"></i>
+                                <span>Nova Categoria</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="openTagModal()">
+                                <i class="fas fa-tag"></i>
+                                <span>Nova Tag</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="exportTasks()">
+                                <i class="fas fa-download"></i>
+                                <span>Exportar</span>
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modals serão inseridos aqui dinamicamente -->
+<div id="modals-container"></div>
+
+<!-- Notifications Panel -->
+<div class="notifications-panel" id="notificationsPanel">
+    <div class="notifications-header">
+        <h3>Notificações</h3>
+        <button class="btn-icon" onclick="toggleNotifications()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="notifications-content">
+        <div class="notification-item unread">
+            <div class="notification-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div class="notification-content">
+                <h4>Tarefa próxima do vencimento</h4>
+                <p>Estudar para Prova de Matemática vence em 2 dias</p>
+                <span class="notification-time">há 1 hora</span>
+            </div>
+        </div>
+        <div class="notification-item">
+            <div class="notification-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="notification-content">
+                <h4>Tarefa concluída</h4>
+                <p>Você marcou "Teste FASE 1" como concluída</p>
+                <span class="notification-time">há 2 horas</span>
+            </div>
+        </div>
+    </div>
+</div>
