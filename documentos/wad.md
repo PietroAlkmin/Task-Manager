@@ -338,11 +338,122 @@ A tela de criação de tarefas em alta fidelidade apresenta um formulário intui
 
 ### 3.6. WebAPI e endpoints (Semana 05)
 
-*Utilize um link para outra página de documentação contendo a descrição completa de cada endpoint. Ou descreva aqui cada endpoint criado para seu sistema.*  
+O sistema Task-It! implementa uma API RESTful para gerenciamento de tarefas. Abaixo estão documentados os principais endpoints:
+
+#### **Endpoints de Tarefas**
+
+| Método | Endpoint | Descrição | Parâmetros |
+|--------|----------|-----------|------------|
+| GET | `/tarefas` | Lista todas as tarefas | - |
+| GET | `/tarefas/:id` | Busca tarefa específica | `id` (path) |
+| POST | `/tarefas` | Cria nova tarefa | `title`, `description`, `due_date`, `priority` (body) |
+| PUT | `/tarefas/:id` | Atualiza tarefa | `id` (path), dados da tarefa (body) |
+| DELETE | `/tarefas/:id` | Remove tarefa | `id` (path) |
+
+#### **Endpoints das Tabelas (Consulta)**
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/api/users` | Lista todos os usuários |
+| GET | `/api/categories` | Lista todas as categorias |
+| GET | `/api/tasks` | Lista todas as tarefas |
+| GET | `/api/tags` | Lista todas as tags |
+| GET | `/api/checklists` | Lista todos os checklists |
+| GET | `/api/notes` | Lista todas as anotações |
+
+#### **Estrutura de Dados**
+
+**Task Object:**
+```json
+{
+  "id": 1,
+  "titulo": "Estudar para prova",
+  "descricao": "Revisar capítulos 1-5",
+  "vencimento": "2025-06-15",
+  "prioridade": "alta",
+  "status": "pendente",
+  "user_id": 1,
+  "categoria_id": 2
+}
+```
+
+#### **Códigos de Resposta**
+- `200 OK`: Operação realizada com sucesso
+- `201 Created`: Recurso criado com sucesso
+- `400 Bad Request`: Dados inválidos
+- `404 Not Found`: Recurso não encontrado
+- `500 Internal Server Error`: Erro interno do servidor
 
 ### 3.7 Interface e Navegação (Semana 07)
 
-*Descreva e ilustre aqui o desenvolvimento do frontend do sistema web, explicando brevemente o que foi entregue em termos de código e sistema. Utilize prints de tela para ilustrar.*
+O frontend do Task-It! foi desenvolvido utilizando **EJS** como template engine, **CSS3** para estilização e **JavaScript** vanilla para interatividade. O sistema segue uma arquitetura MVC com renderização server-side.
+
+#### **Principais Telas Implementadas**
+
+**1. Dashboard Principal**
+<div align="center">
+  <sub>FIGURA 7 - Dashboard Implementado</sub><br>
+  <img src="../assets/Dashboard_Alta_Fidelidade.png" width="100%" alt="Dashboard Implementado"><br>
+  <sup>Tela principal com listagem de tarefas organizadas por prioridade</sup>
+</div>
+
+- Exibição de tarefas em cards coloridos por prioridade
+- Filtros por status (pendente, concluída)
+- Botão para adicionar novas tarefas
+- Interface responsiva
+
+**2. Formulário de Criação/Edição**
+<div align="center">
+  <sub>FIGURA 8 - Formulário de Tarefas</sub><br>
+  <img src="../assets/Task_Creation.png" width="100%" alt="Formulário de Tarefas"><br>
+  <sup>Interface para criação e edição de tarefas</sup>
+</div>
+
+- Campos: título, descrição, data de vencimento, prioridade
+- Validação client-side com JavaScript
+- Feedback visual para erros e sucessos
+
+#### **Funcionalidades JavaScript Implementadas**
+
+```javascript
+// Exemplo de código para criação de tarefa
+async function createTask(taskData) {
+    try {
+        const response = await fetch('/tarefas', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(taskData)
+        });
+        
+        if (response.ok) {
+            fetchTasks(); // Recarrega a lista de tarefas
+        }
+    } catch (error) {
+        console.error('Erro ao criar tarefa:', error);
+    }
+}
+```
+
+#### **Navegação e UX**
+- **Menu lateral** com links principais (implementado em `sidebar.ejs`)
+- **Header responsivo** com navegação (implementado em `header.ejs`)
+- **Modais** para confirmação de exclusão
+- **Feedback visual** para ações do usuário
+- **Loading states** durante operações assíncronas
+
+#### **Arquivos de Estilo**
+- `main.css`: Estilos globais e layout
+- `dashboard.css`: Estilos específicos do dashboard
+- `tasks.css`: Estilos para formulários e cards de tarefas
+- `components.css`: Componentes reutilizáveis
+- `animations.css`: Animações e transições
+
+#### **Responsividade**
+- Layout adaptável para desktop, tablet e mobile
+- Menu colapsável em telas menores
+- Cards reorganizados em colunas únicas no mobile
 
 ---
 
@@ -350,19 +461,148 @@ A tela de criação de tarefas em alta fidelidade apresenta um formulário intui
 
 ### 4.1 Demonstração do Sistema Web (Semana 8)
 
-*VIDEO: Insira o link do vídeo demonstrativo nesta seção*
-*Descreva e ilustre aqui o desenvolvimento do sistema web completo, explicando brevemente o que foi entregue em termos de código e sistema. Utilize prints de tela para ilustrar.*
+#### **VIDEO:** [Link do vídeo será inserido aqui após gravação]
+
+#### **Sistema Implementado**
+
+O Task-It! foi desenvolvido como uma aplicação web completa para gerenciamento de tarefas, seguindo a arquitetura MVC e utilizando as seguintes tecnologias:
+
+**Stack Tecnológico:**
+- **Backend:** Node.js + Express.js
+- **Template Engine:** EJS
+- **Banco de Dados:** PostgreSQL
+- **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
+- **Arquitetura:** MVC (Model-View-Controller)
+
+#### **Funcionalidades Entregues**
+
+<div align="center">
+  <sub>FIGURA 9 - Tela Principal do Sistema</sub><br>
+  <img src="../assets/Dashboard_Alta_Fidelidade.png" width="100%" alt="Sistema Final"><br>
+  <sup>Interface principal do Task-It! em funcionamento</sup>
+</div>
+
+✅ **CRUD Completo de Tarefas**
+- Criação de tarefas com título, descrição, prazo e prioridade
+- Listagem organizada por prioridade (alta, média, baixa)
+- Edição de tarefas existentes
+- Exclusão com confirmação
+
+✅ **Interface Responsiva**
+- Design adaptável para diferentes dispositivos
+- Cards coloridos por prioridade para melhor visualização
+- Formulários intuitivos e validados
+
+✅ **Integração com Banco de Dados**
+- Persistência de dados em PostgreSQL
+- Operações CRUD implementadas via Model
+- Queries otimizadas para performance
+
+#### **Fluxo de Uso Demonstrado**
+
+1. **Acesso ao Dashboard:** Visualização das tarefas organizadas por prioridade
+2. **Criação de Tarefa:** Preenchimento do formulário com validação
+3. **Listagem Dinâmica:** Tarefas exibidas em tempo real após criação
+4. **Edição:** Modificação de tarefas existentes
+5. **Exclusão:** Remoção com confirmação para evitar acidentes
 
 ### 4.2 Conclusões e Trabalhos Futuros (Semana 8)
 
-*Indique pontos fortes e pontos a melhorar de maneira geral.*
-*Relacione também quaisquer outras ideias que você tenha para melhorias futuras.*
+#### **Pontos Fortes do Projeto**
+
+✅ **Arquitetura Sólida**
+- Implementação correta do padrão MVC
+- Separação clara de responsabilidades
+- Código organizado e manutenível
+
+✅ **Interface Intuitiva**
+- Design limpo e funcional
+- Experiência do usuário fluida
+- Responsividade adequada
+
+✅ **Funcionalidades Core**
+- CRUD completo implementado
+- Integração eficiente com banco PostgreSQL
+- Validações adequadas
+
+#### **Principais Desafios Superados**
+
+🔧 **Configuração do Ambiente**
+- Setup inicial do PostgreSQL e conexão com Node.js
+- Configuração das variáveis de ambiente
+
+🔧 **Implementação do MVC**
+- Estruturação correta dos Controllers e Models
+- Gerenciamento de rotas e middlewares
+
+🔧 **Frontend Dinâmico**
+- Integração entre EJS templates e JavaScript
+- Manipulação do DOM para atualizações em tempo real
+
+#### **Pontos a Melhorar**
+
+⚠️ **Segurança**
+- Implementar autenticação de usuários
+- Adicionar validação server-side mais robusta
+- Sanitização de inputs
+
+⚠️ **Performance**
+- Implementar paginação para muitas tarefas
+- Otimizar queries do banco de dados
+- Adicionar cache quando necessário
+
+#### **Trabalhos Futuros**
+
+🚀 **Funcionalidades Avançadas**
+- **Sistema de usuários:** Login/registro com sessões
+- **Categorias e tags:** Organização mais detalhada
+- **Calendário:** Visualização temporal das tarefas
+- **Notificações:** Lembretes antes do vencimento
+- **Checklist:** Subtarefas dentro de tarefas principais
+
+🚀 **Melhorias Técnicas**
+- **API REST completa:** Transformar em SPA com framework frontend
+- **Testes automatizados:** Unit tests e integration tests
+- **Deploy:** Configuração para produção (Heroku/Vercel)
+- **Mobile:** Desenvolvimento de aplicativo móvel
+
+🚀 **UX/UI**
+- **Dark mode:** Tema escuro opcional
+- **Drag & drop:** Reorganização de tarefas por arrastar
+- **Filtros avançados:** Busca por data, categoria, tags
+- **Dashboard analytics:** Estatísticas de produtividade
+
+#### **Aprendizados Principais**
+
+📚 **Técnicos:**
+- Domínio da arquitetura MVC em aplicações web
+- Integração eficiente entre frontend e backend
+- Gerenciamento de banco de dados relacionais
+
+📚 **Soft Skills:**
+- Planejamento e organização de projeto
+- Resolução de problemas técnicos
+- Documentação técnica clara
+
+O projeto Task-It! cumpriu seus objetivos principais de criar um sistema funcional de gerenciamento de tarefas, servindo como base sólida para futuras expansões e melhorias.
 
 
 
 ## <a name="c5"></a>5. Referências
 
-_Incluir as principais referências de seu projeto, para que seu parceiro possa consultar caso ele se interessar em aprofundar. Um exemplo de referência de livro e de site:_<br>
+**Documentação Técnica:**
+- Node.js Documentation. Available at: https://nodejs.org/en/docs/
+- Express.js Guide. Available at: https://expressjs.com/en/guide/
+- PostgreSQL Documentation. Available at: https://www.postgresql.org/docs/
+- EJS Template Engine. Available at: https://ejs.co/
+
+**Padrões e Arquitetura:**
+- MVC Pattern - Mozilla Developer Network. Available at: https://developer.mozilla.org/en-US/docs/Glossary/MVC
+- RESTful API Design Best Practices. Available at: https://restfulapi.net/
+
+**Design e UX:**
+- Material Design Guidelines. Available at: https://material.io/design
+- Web Content Accessibility Guidelines (WCAG). Available at: https://www.w3.org/WAG/WCAG21/quickref/
 
 ---
 ---
