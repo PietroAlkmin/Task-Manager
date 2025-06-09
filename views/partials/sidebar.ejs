@@ -9,9 +9,8 @@
         <div class="sidebar-logo">
             <i class="fas fa-tasks"></i>
             <h2>Task-It!</h2>
-        </div>
-        <button class="sidebar-toggle" id="sidebarToggle">
-            <i class="fas fa-bars"></i>
+        </div>        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+            <i class="fas fa-chevron-left"></i>
         </button>
     </div>
 
@@ -51,23 +50,22 @@
     <!-- Navegação Principal -->
     <nav class="sidebar-nav">
         <div class="nav-section">
-            <h4 class="nav-section-title">Principal</h4>
-            <ul class="nav-list">
+            <h4 class="nav-section-title">Principal</h4>            <ul class="nav-list">
                 <li class="nav-item active">
-                    <a href="/" class="nav-link">
+                    <a href="/" class="nav-link" data-tooltip="Dashboard">
                         <i class="fas fa-home"></i>
                         <span>Dashboard</span>
                         <span class="nav-badge" id="totalTasksBadge">7</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/calendar" class="nav-link">
+                    <a href="/calendar" class="nav-link" data-tooltip="Calendário">
                         <i class="fas fa-calendar-alt"></i>
                         <span>Calendário</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/tasks/new" class="nav-link">
+                    <a href="/tasks/new" class="nav-link" data-tooltip="Nova Tarefa">
                         <i class="fas fa-plus"></i>
                         <span>Nova Tarefa</span>
                     </a>
@@ -76,31 +74,30 @@
         </div>
 
         <div class="nav-section">
-            <h4 class="nav-section-title">Filtros</h4>
-            <ul class="nav-list">
+            <h4 class="nav-section-title">Filtros</h4>            <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterTasks('all')">
+                    <a href="#" class="nav-link" onclick="filterTasks('all')" data-tooltip="Todas">
                         <i class="fas fa-list"></i>
                         <span>Todas</span>
                         <span class="nav-badge" id="allTasksBadge">7</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterTasks('pending')">
+                    <a href="#" class="nav-link" onclick="filterTasks('pending')" data-tooltip="Pendentes">
                         <i class="fas fa-clock"></i>
                         <span>Pendentes</span>
                         <span class="nav-badge pending" id="pendingTasksBadge">4</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterTasks('progress')">
+                    <a href="#" class="nav-link" onclick="filterTasks('progress')" data-tooltip="Em Andamento">
                         <i class="fas fa-play"></i>
                         <span>Em Andamento</span>
                         <span class="nav-badge progress" id="progressTasksBadge">1</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterTasks('completed')">
+                    <a href="#" class="nav-link" onclick="filterTasks('completed')" data-tooltip="Concluídas">
                         <i class="fas fa-check"></i>
                         <span>Concluídas</span>
                         <span class="nav-badge completed" id="completedTasksBadge">2</span>
@@ -115,25 +112,24 @@
                 <button class="btn-icon btn-sm" onclick="openCategoryModal()" title="Adicionar categoria">
                     <i class="fas fa-plus"></i>
                 </button>
-            </div>
-            <ul class="nav-list" id="categoriesList">
+            </div>            <ul class="nav-list" id="categoriesList">
                 <!-- Categorias serão carregadas dinamicamente -->
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterByCategory(5)">
+                    <a href="#" class="nav-link" onclick="filterByCategory(5)" data-tooltip="Inteli">
                         <div class="category-color" style="background: #8B3DFF;"></div>
                         <span>Inteli</span>
                         <span class="nav-badge">3</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterByCategory(1)">
+                    <a href="#" class="nav-link" onclick="filterByCategory(1)" data-tooltip="Estudos">
                         <div class="category-color" style="background: #FF6B6B;"></div>
                         <span>Estudos</span>
                         <span class="nav-badge">2</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterByCategory(2)">
+                    <a href="#" class="nav-link" onclick="filterByCategory(2)" data-tooltip="Trabalho">
                         <div class="category-color" style="background: #4ECDC4;"></div>
                         <span>Trabalho</span>
                         <span class="nav-badge">1</span>

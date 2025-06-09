@@ -3,25 +3,41 @@
    Login e Cadastro
    ===================================================== */
 
+/* Garantir que a página ocupe toda a tela */
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow-x: hidden !important;
+}
+
+body.auth-body {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
 .auth-body {
     background: linear-gradient(135deg, #8B3DFF 0%, #6B2FD1 100%);
     min-height: 100vh;
+    height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
-    padding: var(--spacing-lg);
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
 }
 
 .auth-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    max-width: 1200px;
-    width: 100%;
+    width: 100vw;
+    height: 100vh;
     background: var(--secondary-color);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-lg);
+    border-radius: 0;
+    box-shadow: none;
     overflow: hidden;
-    min-height: 600px;
 }
 
 /* ===== LADO ESQUERDO - BRANDING ===== */
@@ -268,12 +284,12 @@
 @media (max-width: 1024px) {
     .auth-container {
         grid-template-columns: 1fr;
-        max-width: 500px;
+        grid-template-rows: auto 1fr;
     }
     
     .auth-brand {
         padding: var(--spacing-xl);
-        min-height: 200px;
+        min-height: 30vh;
     }
     
     .brand-logo h1 {
@@ -291,11 +307,12 @@
 
 @media (max-width: 768px) {
     .auth-body {
-        padding: var(--spacing-md);
+        padding: 0;
     }
     
     .auth-container {
-        border-radius: var(--radius-lg);
+        border-radius: 0;
+        grid-template-rows: 25vh 1fr;
     }
     
     .auth-forms {
@@ -315,6 +332,10 @@
 @media (max-width: 480px) {
     .auth-forms {
         padding: var(--spacing-lg);
+    }
+    
+    .auth-brand {
+        min-height: 20vh;
     }
     
     .brand-logo {

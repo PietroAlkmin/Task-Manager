@@ -478,14 +478,56 @@ document.addEventListener('DOMContentLoaded', async function() {
     await dashboard.init();
 });
 
+// Load sidebar state from localStorage
+function loadSidebarState() {
+    const sidebar = DOM.$('sidebar');
+    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    
+    if (sidebar && isCollapsed && window.innerWidth > 1024) {
+        sidebar.classList.add('sidebar-collapsed');
+    }
+}
+
+// Initialize sidebar state on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadSidebarState();
+    
+    // Re-check sidebar state on window resize
+    window.addEventListener('resize', function() {
+        const sidebar = DOM.$('sidebar');
+        if (sidebar && window.innerWidth <= 1024) {
+            // Remove collapsed class on mobile to ensure proper mobile behavior
+            sidebar.classList.remove('sidebar-collapsed');
+        } else if (sidebar && window.innerWidth > 1024) {
+            // Restore collapsed state on desktop
+            loadSidebarState();
+        }
+    });
+});
+
 // Global functions for onclick handlers
 function toggleSidebar() {
     const sidebar = DOM.$('sidebar');
     const overlay = DOM.$('sidebarOverlay');
     
-    if (sidebar && overlay) {
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('active');
+    // Check if we're on mobile (based on screen width)
+    const isMobile = window.innerWidth <= 1024;
+    
+    if (isMobile) {
+        // Mobile behavior - show/hide sidebar with overlay
+        if (sidebar && overlay) {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+    } else {
+        // Desktop behavior - collapse/expand sidebar
+        if (sidebar) {
+            sidebar.classList.toggle('sidebar-collapsed');
+            
+            // Save state to localStorage
+            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        }
     }
 }
 
