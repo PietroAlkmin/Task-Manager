@@ -1,0 +1,189 @@
+<!-- =====================================================
+     TASK-IT! - DASHBOARD PRINCIPAL
+     Seguindo protótipos de alta fidelidade
+     ===================================================== -->
+
+<div class="main-layout">
+    <!-- Sidebar -->
+    <%- include('../partials/sidebar') %>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <button class="btn-icon sidebar-mobile-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <h1>Dashboard</h1>
+                    <p class="header-subtitle">Bem-vindo de volta! Aqui está o resumo das suas tarefas.</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-search">
+                    <div class="search-input-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Buscar tarefas..." class="search-input" id="searchInput">
+                    </div>
+                </div>
+                
+                <!-- Dica sobre modo compacto -->
+                <div class="compact-mode-hint" title="Pressione Ctrl+Shift+C para modo ultra-compacto">
+                    <i class="fas fa-compress-alt"></i>
+                </div>
+                
+                <!-- Botão de refresh -->
+                <button class="btn btn-ghost btn-sm" id="refreshButton" title="Atualizar dados">
+                    <i class="fas fa-sync-alt" id="refreshIcon"></i>
+                    <span id="lastUpdate" class="last-update-text"></span>
+                </button>
+                
+                <button class="btn btn-primary" onclick="window.location.href='/task-form'">
+                    <i class="fas fa-plus"></i>
+                    Nova Tarefa
+                </button>
+                <div class="header-notifications">
+                    <button class="btn-icon" onclick="toggleNotifications()" title="Notificações">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Corpo do Conteúdo -->
+        <div class="content-body">
+            <!-- Cards de Estatísticas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="totalTasks">7</h3>
+                        <p class="stat-label">Total de Tarefas</p>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                </div>
+
+                <div class="stat-card pending">
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="pendingTasks">4</h3>
+                        <p class="stat-label">Pendentes</p>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+
+                <div class="stat-card completed">
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="completedTasks">2</h3>
+                        <p class="stat-label">Concluídas</p>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+
+                <div class="stat-card overdue">
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="overdueTasks">1</h3>
+                        <p class="stat-label">Atrasadas</p>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botão para Toggle dos Widgets -->
+            <button class="widget-toggle" id="widgetToggle" title="Mostrar/Esconder Widgets">
+                <i class="fas"></i>
+            </button>
+
+            <!-- Seção Principal com Layout Otimizado -->
+            <div class="dashboard-main" id="dashboardMain">
+                <!-- Tarefas Recentes - Área Principal Expandida -->
+                <section class="dashboard-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Tarefas Recentes</h2>
+                        <a href="/tasks" class="btn btn-ghost btn-sm">
+                            Ver todas
+                        </a>
+                    </div>
+
+                    <div class="tasks-container" id="tasksContainer">
+                        <!-- Loading state -->
+                        <div class="loading-state">
+                            <p>Carregando tarefas...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Widgets Laterais Compactos -->
+                <div class="dashboard-widgets">
+                    <!-- Tarefas Próximas do Vencimento -->
+                    <section class="dashboard-widget">
+                        <div class="section-header">
+                            <h3 class="section-title">Próximas do Vencimento</h3>
+                        </div>
+                        <div class="upcoming-tasks" id="upcomingTasks">
+                            <!-- Loading state -->
+                            <div class="loading-state">
+                                <p>Carregando próximas tarefas...</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Atividade Recente -->
+                    <section class="dashboard-widget">
+                        <div class="section-header">
+                            <h3 class="section-title">Atividade Recente</h3>
+                        </div>
+                        <div class="activity-feed" id="activityFeed">
+                            <!-- Loading state -->
+                            <div class="loading-state">
+                                <p>Carregando atividades...</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+    </main>
+</div>
+
+<!-- Modals serão inseridos aqui dinamicamente -->
+<div id="modals-container"></div>
+
+<!-- Notifications Panel -->
+<div class="notifications-panel" id="notificationsPanel">
+    <div class="notifications-header">
+        <h3>Notificações</h3>
+        <button class="btn-icon" onclick="toggleNotifications()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="notifications-content">
+        <div class="notification-item unread">
+            <div class="notification-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div class="notification-content">
+                <h4>Tarefa próxima do vencimento</h4>
+                <p>Estudar para Prova de Matemática vence em 2 dias</p>
+                <span class="notification-time">há 1 hora</span>
+            </div>
+        </div>
+        <div class="notification-item">
+            <div class="notification-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="notification-content">
+                <h4>Tarefa concluída</h4>
+                <p>Você marcou "Teste FASE 1" como concluída</p>
+                <span class="notification-time">há 2 horas</span>
+            </div>
+        </div>
+    </div>
+</div>

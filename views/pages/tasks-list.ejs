@@ -1,0 +1,98 @@
+<!-- =====================================================
+     TASK-IT! - PÁGINA DE LISTAGEM DE TAREFAS
+     Página para visualizar todas as tarefas
+     ===================================================== -->
+
+<div class="main-layout">
+    <!-- Sidebar -->
+    <%- include('../partials/sidebar') %>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <button class="btn-icon sidebar-mobile-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <h1>Todas as Tarefas</h1>
+                    <p class="header-subtitle">Gerencie e organize todas as suas tarefas.</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-search">
+                    <div class="search-input-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Buscar tarefas..." id="searchInput" onkeyup="tasksList.searchTasks(this.value)">
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-ripple hover-lift transition-all" onclick="window.location.href='/tasks/new'">
+                    <i class="fas fa-plus"></i>
+                    Nova Tarefa
+                </button>
+            </div>
+        </header>
+
+        <!-- Corpo do Conteúdo -->
+        <div class="content-body">
+            <!-- Filtros -->
+            <div class="tasks-filters">
+                <div class="filter-group">
+                    <label class="filter-label">Status:</label>
+                    <select id="statusFilter" onchange="tasksList.filterByStatus(this.value)">
+                        <option value="all">Todos</option>
+                        <option value="pendente">Pendentes</option>
+                        <option value="em_progresso">Em Progresso</option>
+                        <option value="concluida">Concluídas</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Prioridade:</label>
+                    <select id="priorityFilter" onchange="tasksList.filterByPriority(this.value)">
+                        <option value="all">Todas</option>
+                        <option value="alta">Alta</option>
+                        <option value="media">Média</option>
+                        <option value="baixa">Baixa</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Ordenar por:</label>
+                    <select id="sortBy" onchange="tasksList.sortTasks(this.value)">
+                        <option value="created_at">Data de Criação</option>
+                        <option value="due_date">Data de Vencimento</option>
+                        <option value="priority">Prioridade</option>
+                        <option value="title">Título</option>
+                    </select>
+                </div>
+                <button class="btn btn-ghost btn-sm" onclick="tasksList.clearFilters()">
+                    <i class="fas fa-times"></i>
+                    Limpar Filtros
+                </button>
+            </div>            <!-- Container de Tarefas -->
+            <div class="tasks-list-container">
+                <div class="tasks-grid" id="tasksGrid">
+                    <!-- Tarefas serão carregadas aqui -->
+                </div>
+
+                <!-- Paginação -->
+                <div class="pagination" id="pagination" style="display: none;">
+                    <button class="btn btn-ghost btn-sm" id="prevPage" onclick="tasksList.previousPage()">
+                        <i class="fas fa-chevron-left"></i>
+                        Anterior
+                    </button>
+                    <span class="pagination-info" id="paginationInfo">
+                        Página 1 de 1
+                    </span>
+                    <button class="btn btn-ghost btn-sm" id="nextPage" onclick="tasksList.nextPage()">
+                        Próxima
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>

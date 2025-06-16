@@ -1,0 +1,275 @@
+<!-- =====================================================
+     TASK-IT! - PÁGINA DE CALENDÁRIO
+     Visualização temporal das tarefas
+     ===================================================== -->
+
+<div class="main-layout">
+    <!-- Sidebar -->
+    <%- include('../partials/sidebar') %>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <button class="btn-icon sidebar-mobile-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <h1>Calendário</h1>
+                    <p class="header-subtitle">Visualize suas tarefas organizadas por data</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="calendar-controls">
+                    <button class="btn btn-ghost btn-sm" onclick="calendar.previousMonth()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="btn btn-ghost btn-sm" onclick="calendar.goToToday()">
+                        Hoje
+                    </button>
+                    <button class="btn btn-ghost btn-sm" onclick="calendar.nextMonth()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="view-selector">
+                    <button class="btn btn-ghost btn-sm active" onclick="calendar.setView('month')" data-view="month">
+                        Mês
+                    </button>
+                    <button class="btn btn-ghost btn-sm" onclick="calendar.setView('week')" data-view="week">
+                        Semana
+                    </button>
+                    <button class="btn btn-ghost btn-sm" onclick="calendar.setView('day')" data-view="day">
+                        Dia
+                    </button>
+                </div>
+                <button class="btn btn-primary" onclick="window.location.href='/tasks/new'">
+                    <i class="fas fa-plus"></i>
+                    Nova Tarefa
+                </button>
+            </div>
+        </header>
+
+        <!-- Corpo do Conteúdo -->
+        <div class="content-body">
+            <!-- Calendário Principal -->
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h2 class="calendar-month" id="calendarMonth">Janeiro 2025</h2>
+                    <div class="calendar-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #FF3D3D;"></div>
+                            <span>Alta Prioridade</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #FFB930;"></div>
+                            <span>Média Prioridade</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #3D8BFF;"></div>
+                            <span>Baixa Prioridade</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #10AC84;"></div>
+                            <span>Concluída</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualização Mensal -->
+                <div class="calendar-view month-view active" id="monthView">
+                    <div class="calendar-grid">
+                        <div class="calendar-weekdays">
+                            <div class="weekday">Dom</div>
+                            <div class="weekday">Seg</div>
+                            <div class="weekday">Ter</div>
+                            <div class="weekday">Qua</div>
+                            <div class="weekday">Qui</div>
+                            <div class="weekday">Sex</div>
+                            <div class="weekday">Sáb</div>
+                        </div>
+                        <div class="calendar-days" id="calendarDays">
+                            <!-- Dias serão gerados dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualização Semanal -->
+                <div class="calendar-view week-view" id="weekView">
+                    <div class="week-header">
+                        <div class="time-column"></div>
+                        <div class="week-days" id="weekDays">
+                            <!-- Dias da semana serão gerados dinamicamente -->
+                        </div>
+                    </div>
+                    <div class="week-content">
+                        <div class="time-slots" id="timeSlots">
+                            <!-- Horários serão gerados dinamicamente -->
+                        </div>
+                        <div class="week-grid" id="weekGrid">
+                            <!-- Grid da semana será gerado dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualização Diária -->
+                <div class="calendar-view day-view" id="dayView">
+                    <div class="day-header">
+                        <h3 class="day-title" id="dayTitle">Hoje - 15 de Janeiro, 2025</h3>
+                        <div class="day-stats">
+                            <span class="stat-item">
+                                <i class="fas fa-tasks"></i>
+                                <span id="dayTotalTasks">5 tarefas</span>
+                            </span>
+                            <span class="stat-item">
+                                <i class="fas fa-check-circle"></i>
+                                <span id="dayCompletedTasks">2 concluídas</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="day-content">
+                        <div class="day-timeline" id="dayTimeline">
+                            <!-- Timeline do dia será gerada dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar do Calendário -->
+            <div class="calendar-sidebar">
+                <!-- Mini Calendário -->
+                <div class="mini-calendar">
+                    <div class="mini-calendar-header">
+                        <button class="btn-icon btn-sm" onclick="miniCalendar.previousMonth()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <h4 id="miniCalendarMonth">Jan 2025</h4>
+                        <button class="btn-icon btn-sm" onclick="miniCalendar.nextMonth()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="mini-calendar-grid" id="miniCalendarGrid">
+                        <!-- Mini calendário será gerado dinamicamente -->
+                    </div>
+                </div>
+
+                <!-- Tarefas do Dia Selecionado -->
+                <div class="selected-day-tasks">
+                    <h4 class="section-title">
+                        <i class="fas fa-calendar-day"></i>
+                        <span id="selectedDayTitle">Tarefas de Hoje</span>
+                    </h4>
+                    <div class="day-tasks-list" id="selectedDayTasks">
+                        <!-- Tarefas do dia selecionado -->
+                    </div>
+                </div>
+
+                <!-- Próximos Eventos -->
+                <div class="upcoming-events">
+                    <h4 class="section-title">
+                        <i class="fas fa-clock"></i>
+                        Próximos 7 Dias
+                    </h4>
+                    <div class="upcoming-events-list" id="upcomingEventsList">
+                        <!-- Próximos eventos serão carregados dinamicamente -->
+                    </div>
+                </div>
+
+                <!-- Filtros Rápidos -->
+                <div class="calendar-filters">
+                    <h4 class="section-title">
+                        <i class="fas fa-filter"></i>
+                        Filtros
+                    </h4>
+                    <div class="filter-options">
+                        <label class="filter-checkbox">
+                            <input type="checkbox" checked onchange="calendar.toggleFilter('alta')">
+                            <span class="checkmark alta"></span>
+                            Alta Prioridade
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" checked onchange="calendar.toggleFilter('media')">
+                            <span class="checkmark media"></span>
+                            Média Prioridade
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" checked onchange="calendar.toggleFilter('baixa')">
+                            <span class="checkmark baixa"></span>
+                            Baixa Prioridade
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" checked onchange="calendar.toggleFilter('concluida')">
+                            <span class="checkmark concluida"></span>
+                            Concluídas
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal de Detalhes da Tarefa -->
+<div class="modal-overlay" id="taskDetailModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Detalhes da Tarefa</h3>
+            <button class="modal-close" onclick="closeTaskDetailModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="taskDetailContent">
+            <!-- Conteúdo será carregado dinamicamente -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="closeTaskDetailModal()">
+                Fechar
+            </button>
+            <button class="btn btn-primary" onclick="editCurrentTask()">
+                <i class="fas fa-edit"></i>
+                Editar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Criação Rápida -->
+<div class="modal-overlay" id="quickCreateModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Criar Tarefa Rápida</h3>
+            <button class="modal-close" onclick="closeQuickCreateModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="quickCreateForm">
+                <div class="form-group">
+                    <label class="form-label required">Título</label>
+                    <input type="text" name="title" class="form-input" placeholder="Digite o título da tarefa" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Data de Vencimento</label>
+                    <input type="date" name="due_date" class="form-input" id="quickCreateDate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Prioridade</label>
+                    <select name="priority" class="form-select">
+                        <option value="baixa">Baixa</option>
+                        <option value="media" selected>Média</option>
+                        <option value="alta">Alta</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="closeQuickCreateModal()">
+                Cancelar
+            </button>
+            <button class="btn btn-primary" onclick="createQuickTask()">
+                <i class="fas fa-plus"></i>
+                Criar Tarefa
+            </button>
+        </div>
+    </div>
+</div>

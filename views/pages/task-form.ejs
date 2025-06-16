@@ -1,0 +1,362 @@
+<!-- =====================================================
+     TASK-IT! - FORMULÁRIO DE TAREFA
+     Criação e edição de tarefas
+     ===================================================== -->
+
+<div class="main-layout">
+    <!-- Sidebar -->
+    <%- include('../partials/sidebar') %>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <button class="btn-icon sidebar-mobile-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <h1><%= mode === 'edit' ? 'Editar Tarefa' : 'Nova Tarefa' %></h1>
+                    <p class="header-subtitle">
+                        <%= mode === 'edit' ? 'Modifique os detalhes da sua tarefa' : 'Crie uma nova tarefa para organizar seu trabalho' %>
+                    </p>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="btn btn-ghost" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar
+                </button>
+                <% if (mode === 'edit') { %>
+                <button class="btn btn-danger" onclick="deleteTask()">
+                    <i class="fas fa-trash"></i>
+                    Excluir
+                </button>
+                <% } %>
+            </div>
+        </header>
+
+        <!-- Corpo do Conteúdo -->
+        <div class="content-body">
+            <div class="task-form-container">
+                <!-- Formulário Principal -->
+                <div class="task-form-main">
+                    <form id="taskForm" class="task-form">
+                        <!-- Informações Básicas -->
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-info-circle"></i>
+                                Informações Básicas
+                            </h3>
+                            
+                            <div class="form-group">
+                                <label for="title" class="form-label required">Título</label>
+                                <input 
+                                    type="text" 
+                                    id="title" 
+                                    name="title" 
+                                    class="form-input" 
+                                    placeholder="Digite o título da tarefa"
+                                    required
+                                    maxlength="255"
+                                >
+                                <div class="form-error" id="titleError"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description" class="form-label">Descrição</label>
+                                <textarea 
+                                    id="description" 
+                                    name="description" 
+                                    class="form-textarea" 
+                                    placeholder="Descreva os detalhes da tarefa (opcional)"
+                                    rows="4"
+                                ></textarea>
+                                <div class="form-help">Máximo 1000 caracteres</div>
+                                <div class="form-error" id="descriptionError"></div>
+                            </div>
+                        </div>
+
+                        <!-- Configurações -->
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-cog"></i>
+                                Configurações
+                            </h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="priority" class="form-label required">Prioridade</label>
+                                    <select id="priority" name="priority" class="form-select" required>
+                                        <option value="baixa">🟢 Baixa</option>
+                                        <option value="media" selected>🟡 Média</option>
+                                        <option value="alta">🔴 Alta</option>
+                                    </select>
+                                    <div class="form-error" id="priorityError"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="status" class="form-label required">Status</label>
+                                    <select id="status" name="status" class="form-select" required>
+                                        <option value="pendente" selected>⏳ Pendente</option>
+                                        <option value="em_andamento">🔄 Em Andamento</option>
+                                        <option value="concluida">✅ Concluída</option>
+                                        <option value="cancelada">❌ Cancelada</option>
+                                    </select>
+                                    <div class="form-error" id="statusError"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="due_date" class="form-label">Data de Vencimento</label>
+                                    <input 
+                                        type="date" 
+                                        id="due_date" 
+                                        name="due_date" 
+                                        class="form-input"
+                                    >
+                                    <div class="form-help">Deixe em branco se não houver prazo</div>
+                                    <div class="form-error" id="dueDateError"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="due_time" class="form-label">Horário</label>
+                                    <input 
+                                        type="time" 
+                                        id="due_time" 
+                                        name="due_time" 
+                                        class="form-input"
+                                    >
+                                    <div class="form-help">Opcional</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Organização -->
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-folder"></i>
+                                Organização
+                            </h3>
+                            
+                            <div class="form-group">
+                                <label for="category_id" class="form-label">Categoria</label>
+                                <div class="category-select-container">
+                                    <select id="category_id" name="category_id" class="form-select">
+                                        <option value="">Selecione uma categoria</option>
+                                        <!-- Categorias serão carregadas dinamicamente -->
+                                    </select>
+                                    <button type="button" class="btn btn-ghost btn-sm" onclick="openCategoryModal()">
+                                        <i class="fas fa-plus"></i>
+                                        Nova
+                                    </button>
+                                </div>
+                                <div class="form-error" id="categoryError"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="tags" class="form-label">Tags</label>
+                                <div class="tags-input-container">
+                                    <div class="tags-input" id="tagsInput">
+                                        <input 
+                                            type="text" 
+                                            placeholder="Digite uma tag e pressione Enter"
+                                            onkeydown="handleTagInput(event)"
+                                        >
+                                    </div>
+                                    <div class="available-tags" id="availableTags">
+                                        <!-- Tags disponíveis serão carregadas dinamicamente -->
+                                    </div>
+                                </div>
+                                <div class="form-help">Pressione Enter para adicionar uma tag</div>
+                                <div class="form-error" id="tagsError"></div>
+                            </div>
+                        </div>
+
+                        <!-- Checklist -->
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-list-check"></i>
+                                Checklist
+                                <button type="button" class="btn btn-ghost btn-sm" onclick="addChecklistItem()">
+                                    <i class="fas fa-plus"></i>
+                                    Adicionar Item
+                                </button>
+                            </h3>
+                            
+                            <div class="checklist-container" id="checklistContainer">
+                                <!-- Itens do checklist serão adicionados dinamicamente -->
+                            </div>
+                        </div>
+
+                        <!-- Anotações -->
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-sticky-note"></i>
+                                Anotações
+                            </h3>
+                            
+                            <div class="notes-container" id="notesContainer">
+                                <div class="note-input">
+                                    <textarea 
+                                        placeholder="Adicione uma anotação..."
+                                        rows="3"
+                                        onkeydown="handleNoteInput(event)"
+                                    ></textarea>
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="addNote()">
+                                        <i class="fas fa-plus"></i>
+                                        Adicionar
+                                    </button>
+                                </div>
+                                <div class="notes-list" id="notesList">
+                                    <!-- Anotações serão carregadas dinamicamente -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação -->
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-ghost" onclick="history.back()">
+                                <i class="fas fa-times"></i>
+                                Cancelar
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="saveDraft()">
+                                <i class="fas fa-save"></i>
+                                Salvar Rascunho
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i>
+                                <%= mode === 'edit' ? 'Atualizar Tarefa' : 'Criar Tarefa' %>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Sidebar do Formulário -->
+                <div class="task-form-sidebar">
+                    <!-- Preview da Tarefa -->
+                    <div class="task-preview">
+                        <h4 class="preview-title">
+                            <i class="fas fa-eye"></i>
+                            Preview
+                        </h4>
+                        <div class="preview-content" id="taskPreview">
+                            <div class="preview-task-card">
+                                <div class="preview-header">
+                                    <span class="preview-priority" id="previewPriority">Média</span>
+                                    <span class="preview-status" id="previewStatus">Pendente</span>
+                                </div>
+                                <h5 class="preview-task-title" id="previewTitle">Título da tarefa</h5>
+                                <p class="preview-task-description" id="previewDescription">Descrição da tarefa...</p>
+                                <div class="preview-meta">
+                                    <div class="preview-due-date" id="previewDueDate">
+                                        <i class="fas fa-calendar"></i>
+                                        <span>Sem prazo</span>
+                                    </div>
+                                    <div class="preview-category" id="previewCategory">
+                                        <i class="fas fa-folder"></i>
+                                        <span>Sem categoria</span>
+                                    </div>
+                                </div>
+                                <div class="preview-tags" id="previewTags">
+                                    <!-- Tags do preview -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Atalhos -->
+                    <div class="form-shortcuts">
+                        <h4 class="shortcuts-title">
+                            <i class="fas fa-keyboard"></i>
+                            Atalhos
+                        </h4>
+                        <div class="shortcuts-list">
+                            <div class="shortcut-item">
+                                <kbd>Ctrl</kbd> + <kbd>S</kbd>
+                                <span>Salvar</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+                                <span>Criar/Atualizar</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Esc</kbd>
+                                <span>Cancelar</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Tab</kbd>
+                                <span>Próximo campo</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dicas -->
+                    <div class="form-tips">
+                        <h4 class="tips-title">
+                            <i class="fas fa-lightbulb"></i>
+                            Dicas
+                        </h4>
+                        <div class="tips-list">
+                            <div class="tip-item">
+                                <i class="fas fa-star"></i>
+                                <span>Use prioridades para organizar suas tarefas</span>
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-tags"></i>
+                                <span>Tags ajudam a filtrar e encontrar tarefas</span>
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-list"></i>
+                                <span>Checklists quebram tarefas em etapas menores</span>
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Defina prazos para manter o foco</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal de Categoria -->
+<div class="modal-overlay" id="categoryModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Nova Categoria</h3>
+            <button class="modal-close" onclick="closeCategoryModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label class="form-label required">Nome</label>
+                    <input type="text" name="nome" class="form-input" placeholder="Nome da categoria" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cor</label>
+                    <div class="color-picker" id="colorPicker">
+                        <!-- Cores serão geradas dinamicamente -->
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="closeCategoryModal()">Cancelar</button>
+            <button class="btn btn-primary" onclick="createCategory()">Criar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Pass server data to JavaScript
+    window.taskFormData = {
+        mode: '<%= mode %>',
+        taskId: <%= typeof taskId !== 'undefined' ? taskId : 'null' %>
+    };
+</script>

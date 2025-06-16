@@ -1,29 +1,60 @@
-# Task-It! - Gerenciador de Tarefas (Ponderada M2)
+# Task-It! - Gerenciador de Tarefas
 
-Task-It! é um gerenciador de tarefas voltado para estudantes e profissionais que buscam organizar suas atividades diárias de forma simples e eficiente. O sistema permite a criação de tarefas, definição de prazos e organização por prioridade.
+> Sistema de gerenciamento de tarefas desenvolvido para estudantes e profissionais que buscam organizar suas atividades diárias de forma simples e eficiente.
 
-## Arquitetura MVC
+## 🎯 Funcionalidades
 
-Este projeto segue a arquitetura MVC (Model-View-Controller):
+- **CRUD Completo de Tarefas**: Criar, visualizar, editar e excluir tarefas
+-  **Organização por Prioridade**: Tarefas categorizadas em alta, média e baixa prioridade
+-  **Interface Responsiva**: Design moderno e adaptável para diferentes dispositivos
+-  **Persistência de Dados**: Integração com banco PostgreSQL
+-  **Atualizações em Tempo Real**: Interface dinâmica com JavaScript
 
-- **Model**: Representa a estrutura dos dados e interage com o banco PostgreSQL
-- **View**: Interface do usuário implementada com EJS
-- **Controller**: Gerencia a lógica de negócios e as requisições
+## Demonstração
 
-## Configuração do Ambiente
+**Vídeo de Demonstração:** [Link será inserido após gravação]
 
-1. Clone o repositório:
+### Screenshots
+
+<div align="center">
+  <img src="assets/Dashboard_Alta_Fidelidade.png" width="45%" alt="Dashboard Principal">
+  <img src="assets/Task_Creation.png" width="45%" alt="Criação de Tarefa">
+</div>
+
+*Dashboard principal com listagem de tarefas organizadas por prioridade e formulário de criação*
+
+## 🚀 Tecnologias Utilizadas
+
+- **Backend:** Node.js + Express.js
+- **Template Engine:** EJS
+- **Banco de Dados:** PostgreSQL
+- **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
+- **Arquitetura:** MVC (Model-View-Controller)
+
+## ⚙️ Instalação e Configuração
+
+### Pré-requisitos
+
+- Node.js (versão 14.x ou superior)
+- PostgreSQL (versão 12.x ou superior)
+- npm ou yarn
+
+### Passos para Executar Localmente
+
+1. **Clone o repositório:**
 ```bash
 git clone [URL_DO_REPOSITORIO]
-cd task-it
+cd mvc-boilerplate
 ```
 
-2. Instale as dependências:
+2. **Instale as dependências:**
 ```bash
 npm install
 ```
 
-3. Configure o arquivo `.env`:
+3. **Configure o banco de dados:**
+
+Crie um banco PostgreSQL e configure o arquivo `.env`:
 ```env
 DB_HOST=localhost
 DB_PORT=5432
@@ -33,86 +64,96 @@ DB_DATABASE=task_it_db
 DB_SSL=false
 ```
 
-4. Execute a migração do banco de dados:
+4. **Execute o script de inicialização do banco:**
 ```bash
 npm run init-db
 ```
 
-## Requisitos
-
-- Node.js (versão 14.x ou superior)
-- PostgreSQL (versão 12.x ou superior)
-
-## Instalação
-
-1. **Clonar o repositório:**
-
+5. **Inicie o servidor:**
 ```bash
-   git clone https://github.com/seu-usuario/seu-projeto.git
-   cd seu-projeto
+npm start
+# ou para desenvolvimento:
+npm run dev
 ```
 
-2. **Instalar as dependências:**
-
-```bash
-npm install
+6. **Acesse a aplicação:**
+```
+http://localhost:3000
 ```
 
-3. **Configurar o arquivo `.env`:**
+## 📁 Estrutura do Projeto
 
-Renomeie o arquivo `.env.example` para `.env` e configure as variáveis de ambiente necessárias, como as configurações do banco de dados PostgreSQL.
-
-
-Configuração do Banco de Dados
-------------------------------
-
-1. **Criar banco de dados:**
-
-    Crie um banco de dados PostgreSQL com o nome especificado no seu arquivo `.env`.
-
-2. **Executar o script SQL de inicialização:**
-
-```bash
-npm run init-db
+```
+mvc-boilerplate/
+├── assets/                 # Imagens e recursos estáticos
+├── config/
+│   └── db.js              # Configuração do banco PostgreSQL
+├── controllers/           # Controllers MVC
+│   └── taskController.js  # Lógica de negócios das tarefas
+├── models/               # Models MVC
+│   └── Task.js          # Modelo de dados das tarefas
+├── routes/              # Rotas da aplicação
+│   ├── index.js        # Rotas principais
+│   └── tableRoutes.js  # Rotas da API
+├── views/              # Templates EJS
+│   ├── pages/         # Páginas principais
+│   ├── components/    # Componentes reutilizáveis
+│   └── layouts/       # Layouts base
+├── public/            # Arquivos estáticos (CSS, JS, imagens)
+├── scripts/           # Scripts auxiliares
+└── documentos/        # Documentação do projeto
 ```
 
-Isso criará a tabela `users` no seu banco de dados PostgreSQL com UUID como chave primária e inserirá alguns registros de exemplo.
+## Arquitetura MVC
 
+- **Model**: Gerencia dados e lógica de negócios (`models/Task.js`)
+- **View**: Interface do usuário com templates EJS (`views/`)
+- **Controller**: Processa requisições e coordena Model/View (`controllers/`)
 
-Funcionalidades
----------------
+## Scripts Disponíveis
 
-* **Padrão MVC:** Estrutura organizada em Model, View e Controller.
-* **PostgreSQL:** Banco de dados relacional utilizado para persistência dos dados.
-* **UUID:** Utilização de UUID como chave primária na tabela `users`.
-* **Scripts com `nodemon`:** Utilização do `nodemon` para reiniciar automaticamente o servidor após alterações no código.
-* **Testes:** Inclui estrutura básica para testes automatizados.
+- `npm start`: Inicia o servidor de produção
+- `npm run dev`: Inicia com nodemon (desenvolvimento)
+- `npm run init-db`: Inicializa o banco de dados
+- `npm test`: Executa testes (quando implementados)
 
-Scripts Disponíveis
--------------------
+## Funcionalidades Implementadas
 
-* `npm start`: Inicia o servidor Node.js.
-* `npm run dev`: Inicia o servidor com `nodemon`, reiniciando automaticamente após alterações no código.
-* `npm run test`: Executa os testes automatizados.
-* `npm run test:coverage`: Executa os testes e gera um relatório de cobertura de código.
+### Dashboard Principal
+- Listagem de tarefas organizadas por prioridade
+- Cards coloridos para identificação visual
+- Filtros por status (pendente/concluída)
+- Interface responsiva
 
-Estrutura de Diretórios
------------------------
+### Gerenciamento de Tarefas
+- Formulário de criação com validação
+- Edição de tarefas existentes
+- Exclusão com confirmação
+- Campos: título, descrição, prazo, prioridade
 
-* **`config/`**: Configurações do banco de dados e outras configurações do projeto.
-* **`controllers/`**: Controladores da aplicação (lógica de negócio).
-* **`models/`**: Modelos da aplicação (definições de dados e interações com o banco de dados).
-* **`routes/`**: Rotas da aplicação.
-* **`tests/`**: Testes automatizados.
-* **`views/`**: Views da aplicação (se aplicável).
+### API RESTful
+- `GET /tarefas` - Lista todas as tarefas
+- `POST /tarefas` - Cria nova tarefa
+- `PUT /tarefas/:id` - Atualiza tarefa
+- `DELETE /tarefas/:id` - Remove tarefa
 
-Contribuição
-------------
+## 🔮 Trabalhos Futuros
 
-Contribuições são bem-vindas! Sinta-se à vontade para abrir um issue ou enviar um pull request.
+- **Autenticação:** Sistema de login/registro
+- **Categorias:** Organização por categorias personalizadas
+- **Calendário:** Visualização temporal das tarefas
+- **Notificações:** Lembretes de vencimento
+- **Mobile:** Aplicativo móvel nativo
 
-Licença
--------
+## 👨‍💻 Desenvolvedor
 
-Este projeto está licenciado sob a Licença MIT.
+**Pietro Alkmin** - Estudante de Engenharia de Computação - Inteli
+
+## 📄 Documentação Completa
+
+Para documentação técnica detalhada, consulte: [`documentos/wad.md`](documentos/wad.md)
+
+---
+
+*Projeto desenvolvido como parte do Módulo 2 - Inteli - 2025*
 

@@ -1,0 +1,78 @@
+<!-- =====================================================
+     TASK-IT! - SIDEBAR DE NAVEGAÇÃO SIMPLIFICADA
+     ===================================================== -->
+
+<aside class="sidebar" id="sidebar">
+    <!-- Logo e Branding -->
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <i class="fas fa-tasks"></i>
+            <h2>Task-It!</h2>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+
+    <!-- Navegação Principal -->
+    <nav class="sidebar-nav">
+        <div class="nav-section">
+            <ul class="nav-list">
+                <li class="nav-item active">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/tasks" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>Todas as Tarefas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/tasks/new" class="nav-link">
+                        <i class="fas fa-plus"></i>
+                        <span>Nova Tarefa</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/calendar" class="nav-link">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Calendário</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="nav-section">
+            <h4 class="nav-section-title">Filtros Rápidos</h4>
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="#" class="nav-link filter-link" data-filter="pendente" onclick="handleSidebarFilter('pendente')">
+                        <i class="fas fa-clock"></i>
+                        <span>Pendentes</span>
+                        <span class="nav-badge pending" id="pendingTasksBadge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link filter-link" data-filter="concluida" onclick="handleSidebarFilter('concluida')">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Concluídas</span>
+                        <span class="nav-badge completed" id="completedTasksBadge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link filter-link" data-filter="overdue" onclick="handleSidebarFilter('overdue')">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Atrasadas</span>
+                        <span class="nav-badge overdue" id="overdueTasksBadge">0</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</aside>
+
+<!-- Overlay para mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>

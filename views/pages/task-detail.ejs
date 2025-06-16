@@ -1,0 +1,318 @@
+<!-- =====================================================
+     TASK-IT! - DETALHES DA TAREFA
+     Visualização completa da tarefa
+     ===================================================== -->
+
+<div class="main-layout">
+    <!-- Sidebar -->
+    <%- include('../partials/sidebar') %>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <button class="btn-icon sidebar-mobile-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <h1 id="taskTitle">Carregando...</h1>
+                    <p class="header-subtitle" id="taskSubtitle">Detalhes da tarefa</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="btn btn-ghost" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar
+                </button>
+                <button class="btn btn-secondary" onclick="editTask()">
+                    <i class="fas fa-edit"></i>
+                    Editar
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-ghost btn-icon" onclick="toggleTaskMenu()">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <div class="dropdown-menu" id="taskMenu">
+                        <a href="#" onclick="duplicateTask()">
+                            <i class="fas fa-copy"></i>
+                            Duplicar
+                        </a>
+                        <a href="#" onclick="exportTask()">
+                            <i class="fas fa-download"></i>
+                            Exportar
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" onclick="deleteTask()" class="text-danger">
+                            <i class="fas fa-trash"></i>
+                            Excluir
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Corpo do Conteúdo -->
+        <div class="content-body">
+            <div class="task-detail-container">
+                <!-- Conteúdo Principal -->
+                <div class="task-detail-main">
+                    <!-- Status e Ações Rápidas -->
+                    <div class="task-status-bar">
+                        <div class="status-info">
+                            <span class="task-priority" id="taskPriority">Média</span>
+                            <span class="task-status" id="taskStatus">Pendente</span>
+                            <span class="task-progress" id="taskProgress">0% concluído</span>
+                        </div>
+                        <div class="status-actions">
+                            <button class="btn btn-success btn-sm" onclick="markAsCompleted()" id="completeBtn">
+                                <i class="fas fa-check"></i>
+                                Marcar como Concluída
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="startTask()" id="startBtn">
+                                <i class="fas fa-play"></i>
+                                Iniciar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Descrição -->
+                    <div class="task-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-align-left"></i>
+                            Descrição
+                        </h3>
+                        <div class="task-description" id="taskDescription">
+                            <p>Carregando descrição...</p>
+                        </div>
+                    </div>
+
+                    <!-- Checklist -->
+                    <div class="task-section" id="checklistSection">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <i class="fas fa-list-check"></i>
+                                Checklist
+                                <span class="checklist-progress" id="checklistProgress">(0/0)</span>
+                            </h3>
+                            <button class="btn btn-ghost btn-sm" onclick="addChecklistItem()">
+                                <i class="fas fa-plus"></i>
+                                Adicionar
+                            </button>
+                        </div>
+                        <div class="checklist-container" id="checklistContainer">
+                            <!-- Checklist items will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Anotações -->
+                    <div class="task-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <i class="fas fa-sticky-note"></i>
+                                Anotações
+                            </h3>
+                            <button class="btn btn-ghost btn-sm" onclick="addNote()">
+                                <i class="fas fa-plus"></i>
+                                Adicionar
+                            </button>
+                        </div>
+                        <div class="notes-container">
+                            <div class="note-input" id="noteInput" style="display: none;">
+                                <textarea placeholder="Digite sua anotação..." rows="3"></textarea>
+                                <div class="note-input-actions">
+                                    <button class="btn btn-ghost btn-sm" onclick="cancelNote()">Cancelar</button>
+                                    <button class="btn btn-primary btn-sm" onclick="saveNote()">Salvar</button>
+                                </div>
+                            </div>
+                            <div class="notes-list" id="notesList">
+                                <!-- Notes will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Atividade -->
+                    <div class="task-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-history"></i>
+                            Atividade
+                        </h3>
+                        <div class="activity-timeline" id="activityTimeline">
+                            <!-- Activity will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar de Informações -->
+                <div class="task-detail-sidebar">
+                    <!-- Informações Gerais -->
+                    <div class="info-card">
+                        <h4 class="info-title">
+                            <i class="fas fa-info-circle"></i>
+                            Informações
+                        </h4>
+                        <div class="info-list">
+                            <div class="info-item">
+                                <span class="info-label">Criada em:</span>
+                                <span class="info-value" id="createdAt">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Atualizada em:</span>
+                                <span class="info-value" id="updatedAt">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Vencimento:</span>
+                                <span class="info-value" id="dueDate">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Categoria:</span>
+                                <span class="info-value" id="categoryInfo">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="info-card" id="tagsCard">
+                        <h4 class="info-title">
+                            <i class="fas fa-tags"></i>
+                            Tags
+                        </h4>
+                        <div class="tags-list" id="tagsList">
+                            <!-- Tags will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Estatísticas -->
+                    <div class="info-card">
+                        <h4 class="info-title">
+                            <i class="fas fa-chart-bar"></i>
+                            Estatísticas
+                        </h4>
+                        <div class="stats-list">
+                            <div class="stat-item">
+                                <span class="stat-label">Tempo estimado:</span>
+                                <span class="stat-value" id="estimatedTime">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Tempo gasto:</span>
+                                <span class="stat-value" id="timeSpent">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Checklist:</span>
+                                <span class="stat-value" id="checklistStats">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Anotações:</span>
+                                <span class="stat-value" id="notesCount">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ações Rápidas -->
+                    <div class="info-card">
+                        <h4 class="info-title">
+                            <i class="fas fa-bolt"></i>
+                            Ações Rápidas
+                        </h4>
+                        <div class="quick-actions">
+                            <button class="quick-action-btn" onclick="copyTaskLink()">
+                                <i class="fas fa-link"></i>
+                                <span>Copiar Link</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="shareTask()">
+                                <i class="fas fa-share"></i>
+                                <span>Compartilhar</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="printTask()">
+                                <i class="fas fa-print"></i>
+                                <span>Imprimir</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="createSubtask()">
+                                <i class="fas fa-plus"></i>
+                                <span>Subtarefa</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tarefas Relacionadas -->
+                    <div class="info-card" id="relatedTasksCard">
+                        <h4 class="info-title">
+                            <i class="fas fa-project-diagram"></i>
+                            Tarefas Relacionadas
+                        </h4>
+                        <div class="related-tasks" id="relatedTasks">
+                            <!-- Related tasks will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal de Confirmação -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="confirmTitle">Confirmar Ação</h3>
+            <button class="modal-close" onclick="closeConfirmModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p id="confirmMessage">Tem certeza que deseja realizar esta ação?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="closeConfirmModal()">Cancelar</button>
+            <button class="btn btn-primary" onclick="confirmAction()" id="confirmBtn">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Compartilhamento -->
+<div class="modal-overlay" id="shareModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Compartilhar Tarefa</h3>
+            <button class="modal-close" onclick="closeShareModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="share-options">
+                <div class="share-option" onclick="shareViaEmail()">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email</span>
+                </div>
+                <div class="share-option" onclick="shareViaWhatsApp()">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </div>
+                <div class="share-option" onclick="shareViaTwitter()">
+                    <i class="fab fa-twitter"></i>
+                    <span>Twitter</span>
+                </div>
+                <div class="share-option" onclick="copyTaskLink()">
+                    <i class="fas fa-link"></i>
+                    <span>Copiar Link</span>
+                </div>
+            </div>
+            <div class="share-link">
+                <label class="form-label">Link da tarefa:</label>
+                <div class="link-input-group">
+                    <input type="text" class="form-input" id="taskLink" readonly>
+                    <button class="btn btn-ghost btn-sm" onclick="copyTaskLink()">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Pass server data to JavaScript
+    window.taskDetailData = {
+        taskId: <%= taskId %>
+    };
+</script>
