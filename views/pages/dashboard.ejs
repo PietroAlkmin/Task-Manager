@@ -24,10 +24,16 @@
                 <div class="header-search">
                     <div class="search-input-group">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Buscar tarefas..." id="searchInput" onkeyup="dashboard.searchTasks(this.value)">
+                        <input type="text" placeholder="Buscar tarefas..." class="search-input" id="searchInput">
                     </div>
                 </div>
-                <button class="btn btn-primary btn-ripple hover-lift transition-all" onclick="window.location.href='/tasks/new'">
+                
+                <!-- Dica sobre modo compacto -->
+                <div class="compact-mode-hint" title="Pressione Ctrl+Shift+C para modo ultra-compacto">
+                    <i class="fas fa-compress-alt"></i>
+                </div>
+                
+                <button class="btn btn-primary" onclick="window.location.href='/task-form'">
                     <i class="fas fa-plus"></i>
                     Nova Tarefa
                 </button>
@@ -85,8 +91,13 @@
                 </div>
             </div>
 
+            <!-- Botão para Toggle dos Widgets -->
+            <button class="widget-toggle" id="widgetToggle" title="Mostrar/Esconder Widgets">
+                <i class="fas"></i>
+            </button>
+
             <!-- Seção Principal com Layout Otimizado -->
-            <div class="dashboard-main">
+            <div class="dashboard-main" id="dashboardMain">
                 <!-- Tarefas Recentes - Área Principal Expandida -->
                 <section class="dashboard-section">
                     <div class="section-header">

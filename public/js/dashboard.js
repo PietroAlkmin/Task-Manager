@@ -346,6 +346,108 @@ class Dashboard {
                 this.filterTasks(filter);
             });
         });
+
+        // ===== TOGGLE DOS WIDGETS LATERAIS =====
+        const widgetToggle = document.getElementById('widgetToggle');
+        const dashboardMain = document.getElementById('dashboardMain');
+        
+        if (widgetToggle && dashboardMain) {
+            let widgetsHidden = false;
+            
+            // Verificar estado salvo no localStorage
+            const savedState = localStorage.getItem('dashboardWidgetsHidden');
+            if (savedState === 'true') {
+                toggleWidgets();
+            }
+            
+            widgetToggle.addEventListener('click', toggleWidgets);
+            
+            function toggleWidgets() {
+                widgetsHidden = !widgetsHidden;
+                
+                if (widgetsHidden) {
+                    dashboardMain.classList.add('hide-widgets');
+                    widgetToggle.classList.add('widgets-hidden');
+                    widgetToggle.title = 'Mostrar Widgets';
+                } else {
+                    dashboardMain.classList.remove('hide-widgets');
+                    widgetToggle.classList.remove('widgets-hidden');
+                    widgetToggle.title = 'Esconder Widgets';
+                }
+                
+                // Salvar estado no localStorage
+                localStorage.setItem('dashboardWidgetsHidden', widgetsHidden.toString());
+            }
+        }
+
+        // ===== OTIMIZAÇÃO AUTOMÁTICA PARA TELAS PEQUENAS =====
+        function checkScreenSize() {
+            const dashboardMain = document.getElementById('dashboardMain');
+            if (dashboardMain && window.innerWidth <= 1024) {
+                dashboardMain.classList.add('hide-widgets');
+            }
+        }
+        
+        // Verificar tamanho da tela na inicialização e redimensionamento
+        checkScreenSize();
+        window.addEventListener('resize', checkScreenSize);
+
+        // ===== MODO ULTRA-COMPACTO =====
+        const bodyElement = document.body;
+        
+        // Verificar se modo compacto está ativo
+        const isCompactMode = localStorage.getItem('dashboardCompactMode') === 'true';
+        if (isCompactMode) {
+            bodyElement.classList.add('dashboard-ultra-compact', 'maximize-space');
+        }
+        
+        // Atalho de teclado para toggle do modo compacto (Ctrl+Shift+C)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                e.preventDefault();
+                toggleCompactMode();
+            }
+        });
+        
+        function toggleCompactMode() {
+            const isCurrentlyCompact = bodyElement.classList.contains('dashboard-ultra-compact');
+            
+            if (isCurrentlyCompact) {
+                bodyElement.classList.remove('dashboard-ultra-compact', 'maximize-space');
+                localStorage.setItem('dashboardCompactMode', 'false');
+                showToast('Modo normal ativado', 'info');
+            } else {
+                bodyElement.classList.add('dashboard-ultra-compact', 'maximize-space');
+                localStorage.setItem('dashboardCompactMode', 'true');
+                showToast('Modo ultra-compacto ativado (Ctrl+Shift+C para alternar)', 'success');
+            }
+        }
+
+        // ===== DETECÇÃO AUTOMÁTICA DE DENSIDADE DE TELA =====
+        function detectScreenDensity() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const area = width * height;
+            
+            // Se a área da tela for muito grande, ativar otimizações automáticas
+            if (area > 2073600) { // > 1920x1080
+                bodyElement.classList.add('high-density-screen');
+            }
+            
+            // Para telas ultra-wide, maximizar aproveitamento horizontal
+            if (width / height > 1.8) {
+                bodyElement.classList.add('ultra-wide-screen');
+            }
+        }
+        
+        detectScreenDensity();
+        window.addEventListener('resize', detectScreenDensity);
+
+        // ===== ÍCONE DE DICA CLICÁVEL =====
+        const compactModeHint = document.querySelector('.compact-mode-hint');
+        if (compactModeHint) {
+            compactModeHint.addEventListener('click', toggleCompactMode);
+        }
     }
 
     // ===== TASK ACTIONS =====
