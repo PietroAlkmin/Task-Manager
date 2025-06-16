@@ -122,15 +122,17 @@ exports.createTask = async (req, res) => {
 exports.updateTask = async (req, res) => {
     try {
         const userId = req.user?.id || 1; // TODO: Usar ID do usuário autenticado
-        const taskData = {
-            title: req.body.title,
-            description: req.body.description,
-            due_date: req.body.due_date,
-            priority: req.body.priority,
-            status: req.body.status,
-            category_id: req.body.category_id,
-            lembrete_minutos: req.body.lembrete_minutos
-        };
+        
+        // Construir objeto com apenas os campos fornecidos
+        const taskData = {};
+        
+        if (req.body.title !== undefined) taskData.title = req.body.title;
+        if (req.body.description !== undefined) taskData.description = req.body.description;
+        if (req.body.due_date !== undefined) taskData.due_date = req.body.due_date;
+        if (req.body.priority !== undefined) taskData.priority = req.body.priority;
+        if (req.body.status !== undefined) taskData.status = req.body.status;
+        if (req.body.category_id !== undefined) taskData.category_id = req.body.category_id;
+        if (req.body.lembrete_minutos !== undefined) taskData.lembrete_minutos = req.body.lembrete_minutos;
 
         // Validação básica dos dados
         if (taskData.title && taskData.title.trim() === '') {

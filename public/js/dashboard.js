@@ -15,12 +15,15 @@ class Dashboard {
             
             // Hide loading spinner immediately
             this.hideLoading();
-            
-            // Load mock data immediately
-            this.loadMockStats();
-            this.loadMockTasks();
-            this.loadMockUpcomingTasks();
-            this.loadMockActivityFeed();
+              // Try to load real data first, fallback to mock if fails
+            try {
+                await this.loadRealData();
+                this.updateLastRefreshTime();
+                console.log('Real data loaded successfully');
+            } catch (error) {
+                console.warn('Failed to load real data, using mock data:', error);
+                this.loadMockData();
+            }
 
             // Setup event listeners
             this.setupEventListeners();
@@ -30,6 +33,81 @@ class Dashboard {
         } catch (error) {
             console.error('Error initializing dashboard:', error);
         }
+    }
+
+    // ===== CARREGAMENTO DE DADOS REAIS =====
+    async loadRealData() {
+        console.log('Loading real data from server...');
+        
+        // Load real stats and tasks in parallel
+        await Promise.all([
+            this.loadRealStats(),
+            this.loadRealTasks(),
+            this.loadRealUpcomingTasks(),
+            this.loadRealActivityFeed()
+        ]);
+    }    async loadRealStats() {
+        try {
+            const response = await fetch('/tarefas/stats/summary');
+            if (!response.ok) throw new Error('Failed to fetch stats');
+            
+            const result = await response.json();
+            this.stats = result.data || result;
+            console.log('Real stats loaded:', this.stats);
+            this.updateStatsDisplay();
+            this.updateSidebarBadges();
+        } catch (error) {
+            console.error('Error loading real stats:', error);
+            throw error;
+        }
+    }
+
+    async loadRealTasks() {
+        try {
+            const response = await fetch('/tarefas');
+            if (!response.ok) throw new Error('Failed to fetch tasks');
+            
+            const result = await response.json();
+            this.tasks = result.data || result;
+            console.log('Real tasks loaded:', this.tasks);
+            this.renderTasks();
+        } catch (error) {
+            console.error('Error loading real tasks:', error);
+            throw error;
+        }
+    }
+
+    async loadRealUpcomingTasks() {
+        try {
+            const response = await fetch('/tarefas/upcoming');
+            if (!response.ok) throw new Error('Failed to fetch upcoming tasks');
+            
+            const result = await response.json();
+            const upcomingTasks = result.data || result;
+            console.log('Real upcoming tasks loaded:', upcomingTasks);
+            this.renderUpcomingTasks(upcomingTasks);
+        } catch (error) {
+            console.error('Error loading real upcoming tasks:', error);
+            this.loadMockUpcomingTasks(); // Fallback to mock
+        }
+    }
+
+    async loadRealActivityFeed() {
+        try {
+            // For now, use mock activity feed as this endpoint might not exist yet
+            this.loadMockActivityFeed();
+        } catch (error) {
+            console.error('Error loading real activity feed:', error);
+            this.loadMockActivityFeed();
+        }
+    }
+
+    // ===== CARREGAMENTO DE DADOS MOCK (FALLBACK) =====
+    loadMockData() {
+        this.loadMockStats();
+        this.loadMockTasks();
+        this.loadMockUpcomingTasks();
+        this.loadMockActivityFeed();
     }
 
     // ===== CARREGAMENTO DE DADOS MOCK =====
@@ -279,18 +357,29 @@ class Dashboard {
                 ${recentTasks.map(task => this.renderTaskCard(task)).join('')}
             </div>
         `;
-    }
-
-    renderTaskCard(task) {
-        const priorityClass = task.prioridade || 'baixa';
-        const statusClass = task.status || 'pendente';
-        const dueDate = task.data_vencimento ? new Date(task.data_vencimento).toLocaleDateString('pt-BR') : 'Sem prazo';
+    }    renderTaskCard(task) {
+        // Mapear campos do banco (inglês) para exibição
+        const title = task.titulo || task.title || 'Sem título';
+        const description = task.descricao || task.description || 'Sem descrição';
+        const priority = task.prioridade || task.priority || 'baixa';
+        const status = task.status || 'pendente';
+        const dueDate = task.data_vencimento || task.due_date;
+        
+        const priorityClass = priority.toLowerCase();
+        const statusClass = status.toLowerCase();
+        const dueDateFormatted = dueDate ? new Date(dueDate).toLocaleDateString('pt-BR') : 'Sem prazo';
+        
+        // Mapear categoria
+        const category = task.categoria || (task.category_name ? {
+            nome: task.category_name,
+            cor: task.category_color || '#8B3DFF'
+        } : null);
         
         return `
             <div class="task-card priority-${priorityClass} status-${statusClass}" onclick="dashboard.viewTask(${task.id})">
                 <div class="task-header">
                     <div class="task-priority">
-                        <span class="priority-badge ${priorityClass}">${priorityClass.toUpperCase()}</span>
+                        <span class="priority-badge ${priorityClass}">${priority.toUpperCase()}</span>
                     </div>
                     <div class="task-actions">
                         <button class="btn-icon btn-sm" onclick="event.stopPropagation(); dashboard.editTask(${task.id})" title="Editar">
@@ -299,22 +388,25 @@ class Dashboard {
                         <button class="btn-icon btn-sm" onclick="event.stopPropagation(); dashboard.toggleTaskStatus(${task.id})" title="Marcar como ${statusClass === 'concluida' ? 'pendente' : 'concluída'}">
                             <i class="fas ${statusClass === 'concluida' ? 'fa-undo' : 'fa-check'}"></i>
                         </button>
+                        <button class="btn-icon btn-sm btn-delete" onclick="event.stopPropagation(); dashboard.deleteTask(${task.id})" title="Excluir tarefa">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </div>
                 </div>
                 <div class="task-content">
-                    <h3 class="task-title">${task.titulo}</h3>
-                    <p class="task-description">${task.descricao}</p>
+                    <h3 class="task-title">${title}</h3>
+                    <p class="task-description">${description}</p>
                 </div>
                 <div class="task-footer">
                     <div class="task-meta">
                         <span class="task-due">
                             <i class="fas fa-calendar"></i>
-                            ${dueDate}
+                            ${dueDateFormatted}
                         </span>
-                        ${task.categoria ? `
-                            <span class="task-category" style="color: ${task.categoria.cor}">
+                        ${category ? `
+                            <span class="task-category" style="color: ${category.cor}">
                                 <i class="fas fa-tag"></i>
-                                ${task.categoria.nome}
+                                ${category.nome}
                             </span>
                         ` : ''}
                     </div>
@@ -326,6 +418,142 @@ class Dashboard {
                 </div>
             </div>
         `;
+    }    // ===== RENDERIZAÇÃO DE TAREFAS VINDAS DO SERVIDOR =====
+    renderUpcomingTasks(upcomingTasks) {
+        console.log('Rendering upcoming tasks from server...');
+        const upcomingContainer = document.getElementById('upcomingTasks');
+        
+        if (!upcomingContainer) {
+            console.warn('Upcoming tasks container not found');
+            return;
+        }
+
+        if (!upcomingTasks || upcomingTasks.length === 0) {
+            upcomingContainer.innerHTML = '<p class="empty-state">Nenhuma tarefa próxima do vencimento</p>';
+            return;
+        }
+
+        upcomingContainer.innerHTML = upcomingTasks.map(task => {
+            const today = new Date();
+            const dueDate = task.data_vencimento || task.due_date;
+            const due = new Date(dueDate);
+            const diffTime = due - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            let dueDateText = '';
+            let dueDateClass = '';
+
+            if (diffDays < 0) {
+                dueDateText = `${Math.abs(diffDays)} dia(s) atrasado`;
+                dueDateClass = 'overdue';
+            } else if (diffDays === 0) {
+                dueDateText = 'Vence hoje';
+                dueDateClass = 'due-today';
+            } else if (diffDays === 1) {
+                dueDateText = 'Vence amanhã';
+                dueDateClass = 'due-tomorrow';
+            } else {
+                dueDateText = `Vence em ${diffDays} dia(s)`;
+                dueDateClass = 'due-later';
+            }
+
+            const priority = task.prioridade || task.priority || 'baixa';
+            const title = task.titulo || task.title || 'Sem título';
+            const priorityClass = this.getPriorityClass(priority);
+
+            return `
+                <div class="upcoming-task-item">
+                    <div class="task-priority-indicator ${priorityClass}"></div>
+                    <div class="upcoming-task-content">
+                        <h4 class="upcoming-task-title">${title}</h4>
+                        <p class="upcoming-task-due ${dueDateClass}">${dueDateText}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ===== REFRESH DOS DADOS =====
+    async refreshData() {
+        console.log('Refreshing dashboard data...');
+        try {
+            // Show loading animation
+            const refreshIcon = document.getElementById('refreshIcon');
+            if (refreshIcon) {
+                refreshIcon.classList.add('fa-spin');
+            }
+            
+            this.showLoading();
+            await this.loadRealData();
+            this.hideLoading();
+            
+            // Update last refresh time
+            this.updateLastRefreshTime();
+            
+            this.showToast('Dados atualizados com sucesso!', 'success');
+        } catch (error) {
+            console.error('Error refreshing data:', error);
+            this.hideLoading();
+            this.showToast('Erro ao atualizar dados', 'error');
+        } finally {
+            // Stop loading animation
+            const refreshIcon = document.getElementById('refreshIcon');
+            if (refreshIcon) {
+                refreshIcon.classList.remove('fa-spin');
+            }
+        }
+    }
+
+    updateLastRefreshTime() {
+        const lastUpdateElement = document.getElementById('lastUpdate');
+        if (lastUpdateElement) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            lastUpdateElement.textContent = ` ${timeString}`;
+        }
+    }
+
+    // ===== UTILITÁRIOS =====
+    getPriorityClass(priority) {
+        switch (priority?.toLowerCase()) {
+            case 'alta': 
+            case 'high': 
+                return 'priority-high';
+            case 'media': 
+            case 'medium': 
+                return 'priority-medium';
+            case 'baixa': 
+            case 'low': 
+                return 'priority-low';
+            default: 
+                return 'priority-medium';
+        }
+    }
+
+    showLoading() {
+        const loadingStates = document.querySelectorAll('.loading-state');
+        loadingStates.forEach(state => {
+            state.style.display = 'block';
+        });
+    }
+
+    hideLoading() {
+        const loadingStates = document.querySelectorAll('.loading-state');
+        loadingStates.forEach(state => {
+            state.style.display = 'none';
+        });
+    }
+
+    showToast(message, type = 'info') {
+        // Use existing toast functionality from utils.js if available
+        if (typeof showToast === 'function') {
+            showToast(message, type);
+        } else {
+            console.log(`Toast: ${message} (${type})`);
+        }
     }
 
     // ===== EVENT LISTENERS =====
@@ -338,6 +566,14 @@ class Dashboard {
             });
         }
 
+        // Refresh button
+        const refreshButton = document.getElementById('refreshButton');
+        if (refreshButton) {
+            refreshButton.addEventListener('click', () => {
+                this.refreshData();
+            });
+        }
+
         // Filter buttons
         document.querySelectorAll('[data-filter]').forEach(button => {
             button.addEventListener('click', (e) => {
@@ -345,6 +581,23 @@ class Dashboard {
                 const filter = button.getAttribute('data-filter');
                 this.filterTasks(filter);
             });
+        });
+
+        // Auto-refresh when returning from task creation
+        window.addEventListener('focus', () => {
+            // Check if we returned from task form
+            if (document.referrer.includes('/task-form')) {
+                setTimeout(() => {
+                    this.refreshData();
+                }, 500);
+            }
+        });
+
+        // Listen for storage events (when task is created in another tab)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'taskCreated') {
+                this.refreshData();
+            }
         });
 
         // ===== TOGGLE DOS WIDGETS LATERAIS =====
@@ -451,22 +704,73 @@ class Dashboard {
     }
 
     // ===== TASK ACTIONS =====
-    viewTask(taskId) {
-        window.location.href = `/tasks/${taskId}`;
+    async deleteTask(taskId) {
+        if (!confirm('Tem certeza que deseja excluir esta tarefa?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/tarefas/${taskId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao excluir tarefa');
+            }
+
+            this.showToast('Tarefa excluída com sucesso!', 'success');
+            await this.refreshData();
+        } catch (error) {
+            console.error('Error deleting task:', error);
+            this.showToast('Erro ao excluir tarefa', 'error');
+        }
+    }
+
+    async toggleTaskStatus(taskId) {
+        try {
+            // Encontrar a tarefa atual
+            const task = this.tasks.find(t => t.id === taskId);
+            if (!task) {
+                throw new Error('Tarefa não encontrada');
+            }
+
+            // Determinar novo status
+            const currentStatus = task.status;
+            const newStatus = currentStatus === 'concluida' ? 'pendente' : 'concluida';
+
+            const response = await fetch(`/tarefas/${taskId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: newStatus
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao atualizar status da tarefa');
+            }
+
+            this.showToast(`Tarefa marcada como ${newStatus === 'concluida' ? 'concluída' : 'pendente'}!`, 'success');
+            await this.refreshData();
+        } catch (error) {
+            console.error('Error toggling task status:', error);
+            this.showToast('Erro ao atualizar status da tarefa', 'error');
+        }
     }
 
     editTask(taskId) {
-        window.location.href = `/tasks/${taskId}/edit`;
+        // Redirecionar para página de edição
+        window.location.href = `/task-form?id=${taskId}`;
     }
 
-    toggleTaskStatus(taskId) {
-        const task = this.tasks.find(t => t.id === taskId);
-        if (!task) return;
-
-        const newStatus = task.status === 'concluida' ? 'pendente' : 'concluida';
-        task.status = newStatus;
-        this.renderTasks();
-        this.loadMockStats(); // Refresh stats
+    viewTask(taskId) {
+        // Redirecionar para página de detalhes da tarefa
+        window.location.href = `/task-detail/${taskId}`;
     }
 
     searchTasks(query) {

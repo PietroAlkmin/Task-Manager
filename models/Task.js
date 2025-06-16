@@ -77,9 +77,7 @@ class Task {
         await this.logActivity('criada', `Tarefa "${title}" foi criada`, result.rows[0].id, userId);
 
         return result.rows[0];
-    }
-
-    /**
+    }    /**
      * Atualiza uma tarefa existente
      * @param {number} id - ID da tarefa
      * @param {Object} taskData - Dados atualizados da tarefa
@@ -87,28 +85,76 @@ class Task {
      * @returns {Object|null} Tarefa atualizada ou null
      */
     static async update(id, taskData, userId) {
-        const {
-            title,
-            description,
-            due_date,
-            priority,
-            status,
-            category_id,
-            lembrete_minutos
-        } = taskData;
+        // Construir query dinâmica baseada nos campos fornecidos
+        const fieldsToUpdate = [];
+        const values = [];
+        let paramCount = 1;
+
+        if (taskData.title !== undefined) {
+            fieldsToUpdate.push(`title = $${paramCount}`);
+            values.push(taskData.title);
+            paramCount++;
+        }
+
+        if (taskData.description !== undefined) {
+            fieldsToUpdate.push(`description = $${paramCount}`);
+            values.push(taskData.description);
+            paramCount++;
+        }
+
+        if (taskData.due_date !== undefined) {
+            fieldsToUpdate.push(`due_date = $${paramCount}`);
+            values.push(taskData.due_date);
+            paramCount++;
+        }
+
+        if (taskData.priority !== undefined) {
+            fieldsToUpdate.push(`priority = $${paramCount}`);
+            values.push(taskData.priority);
+            paramCount++;
+        }
+
+        if (taskData.status !== undefined) {
+            fieldsToUpdate.push(`status = $${paramCount}`);
+            values.push(taskData.status);
+            paramCount++;
+        }
+
+        if (taskData.category_id !== undefined) {
+            fieldsToUpdate.push(`category_id = $${paramCount}`);
+            values.push(taskData.category_id);
+            paramCount++;
+        }
+
+        if (taskData.lembrete_minutos !== undefined) {
+            fieldsToUpdate.push(`lembrete_minutos = $${paramCount}`);
+            values.push(taskData.lembrete_minutos);
+            paramCount++;
+        }
+
+        // Sempre atualizar timestamp
+        fieldsToUpdate.push(`atualizado_em = CURRENT_TIMESTAMP`);
+
+        // Adicionar WHERE conditions
+        values.push(id, userId);
+
+        if (fieldsToUpdate.length === 1) { // Apenas timestamp
+            throw new Error('Nenhum campo para atualizar fornecido');
+        }
 
         // Query de atualização retornando a tarefa atualizada
-        const result = await pool.query(
-            `UPDATE tasks
-            SET title = $1, description = $2, due_date = $3,
-                priority = $4, status = $5, category_id = $6,
-                lembrete_minutos = $7, atualizado_em = CURRENT_TIMESTAMP
-             WHERE id = $8 AND user_id = $9 RETURNING *`,
-            [title, description, due_date, priority, status, category_id, lembrete_minutos, id, userId]
-        );
+        const query = `
+            UPDATE tasks
+            SET ${fieldsToUpdate.join(', ')}
+            WHERE id = $${paramCount} AND user_id = $${paramCount + 1}
+            RETURNING *
+        `;
+
+        const result = await pool.query(query, values);
 
         if (result.rows[0]) {
             // Registrar log de atividade
+            const title = result.rows[0].title;
             await this.logActivity('editada', `Tarefa "${title}" foi atualizada`, id, userId);
         }
 
