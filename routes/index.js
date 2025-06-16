@@ -189,6 +189,16 @@ router.get('/', (req, res) => {
     });
 });
 
+// Rota explícita para /dashboard (alias)
+router.get('/dashboard', (req, res) => {
+    res.render('pages/dashboard', {
+        title: 'Task-It! - Dashboard',
+        bodyClass: 'dashboard-page',
+        additionalCSS: ['/css/dashboard.css'],
+        additionalJS: ['/js/dashboard.js']
+    });
+});
+
 // Página de calendário
 router.get('/calendar', (req, res) => {
     res.render('pages/calendar', {
@@ -229,6 +239,16 @@ router.get('/tasks/:id', (req, res) => {
         taskId: req.params.id,
         additionalCSS: ['/css/tasks.css'],
         additionalJS: ['/js/task-detail.js']
+    });
+});
+
+// Página de listagem de todas as tarefas
+router.get('/tasks', (req, res) => {
+    res.render('pages/tasks-list', {
+        title: 'Task-It! - Todas as Tarefas',
+        bodyClass: 'tasks-list-page',
+        additionalCSS: ['/css/dashboard.css', '/css/tasks-list.css'],
+        additionalJS: ['/js/utils.js', '/js/api.js', '/js/tasks-list.js']
     });
 });
 

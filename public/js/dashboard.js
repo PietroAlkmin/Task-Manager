@@ -6,624 +6,463 @@
 class Dashboard {
     constructor() {
         this.currentFilter = 'all';
-        this.currentView = 'list';
         this.tasks = [];
-        this.categories = [];
-        this.tags = [];
         this.stats = {};
-    }
-
-    // ===== INICIALIZAÇÃO =====
+    }    // ===== INICIALIZAÇÃO =====
     async init() {
         try {
-            // Check authentication
-            if (!API.isAuthenticated()) {
-                window.location.href = '/auth';
-                return;
-            }
-
-            // Load user info
-            this.loadUserInfo();
-
-            // Load all data
-            await Promise.all([
-                this.loadStats(),
-                this.loadTasks(),
-                this.loadCategories(),
-                this.loadTags(),
-                this.loadUpcomingTasks(),
-                this.loadActivityFeed()
-            ]);
+            console.log('Dashboard init started...');
+            
+            // Hide loading spinner immediately
+            this.hideLoading();
+            
+            // Load mock data immediately
+            this.loadMockStats();
+            this.loadMockTasks();
+            this.loadMockUpcomingTasks();
+            this.loadMockActivityFeed();
 
             // Setup event listeners
             this.setupEventListeners();
 
-            // Animate stat cards
-            this.animateStatCards();
-
-            // Hide loading
-            Loading.hide();
-
-            Toast.success('Dashboard carregado com sucesso!');
+            console.log('Dashboard initialized successfully');
+            
         } catch (error) {
             console.error('Error initializing dashboard:', error);
-            Toast.error('Erro ao carregar dashboard');
         }
     }
 
-    // ===== CARREGAMENTO DE DADOS =====
-    loadUserInfo() {
-        const user = API.getCurrentUser();
-        if (user) {
-            const userName = DOM.$('userName');
-            const userEmail = DOM.$('userEmail');
-            
-            if (userName) userName.textContent = user.nome;
-            if (userEmail) userEmail.textContent = user.email;
-        }
-    }
-
-    async loadStats() {
-        try {
-            const response = await API.getTaskStats();
-            if (response.success) {
-                this.stats = response.data;
-                this.updateStatsDisplay();
-                this.updateSidebarBadges();
-            }
-        } catch (error) {
-            console.error('Error loading stats:', error);
-        }
-    }
-
-    async loadTasks() {
-        try {
-            const response = await API.getTasks();
-            if (response.success) {
-                this.tasks = response.data;
-                this.renderTasks();
-            }
-        } catch (error) {
-            console.error('Error loading tasks:', error);
-            this.showTasksError();
-        }
-    }
-
-    async loadCategories() {
-        try {
-            const response = await API.getCategories();
-            if (response.success) {
-                this.categories = response.data;
-                this.renderCategories();
-            }
-        } catch (error) {
-            console.error('Error loading categories:', error);
-        }
-    }
-
-    async loadTags() {
-        try {
-            const response = await API.getTags();
-            if (response.success) {
-                this.tags = response.data;
-                this.renderTags();
-            }
-        } catch (error) {
-            console.error('Error loading tags:', error);
-        }
-    }
-
-    async loadUpcomingTasks() {
-        try {
-            const response = await API.getUpcomingTasks(7);
-            if (response.success) {
-                this.renderUpcomingTasks(response.data);
-            }
-        } catch (error) {
-            console.error('Error loading upcoming tasks:', error);
-        }
-    }
-
-    async loadActivityFeed() {
-        try {
-            // Simulated activity feed - replace with real API call
-            const activities = [
-                {
-                    type: 'task_completed',
-                    message: 'Tarefa "Teste FASE 1" foi concluída',
-                    time: '2 horas atrás',
-                    icon: 'fas fa-check-circle',
-                    color: 'success'
-                },
-                {
-                    type: 'task_created',
-                    message: 'Nova tarefa "Implementar Models" foi criada',
-                    time: '4 horas atrás',
-                    icon: 'fas fa-plus-circle',
-                    color: 'info'
-                },
-                {
-                    type: 'category_created',
-                    message: 'Categoria "Teste FASE 2" foi criada',
-                    time: '1 dia atrás',
-                    icon: 'fas fa-folder-plus',
-                    color: 'primary'
-                }
-            ];
-            this.renderActivityFeed(activities);
-        } catch (error) {
-            console.error('Error loading activity feed:', error);
-        }
-    }
-
-    // ===== RENDERIZAÇÃO =====
-    updateStatsDisplay() {
-        const elements = {
-            totalTasks: DOM.$('totalTasks'),
-            pendingTasks: DOM.$('pendingTasks'),
-            completedTasks: DOM.$('completedTasks'),
-            overdueTasks: DOM.$('overdueTasks')
+    // ===== CARREGAMENTO DE DADOS MOCK =====
+    loadMockStats() {
+        this.stats = {
+            total: 6,
+            pendentes: 3,
+            em_andamento: 1,
+            concluidas: 2,
+            atrasadas: 1
         };
+        console.log('Mock stats loaded:', this.stats);
+        this.updateStatsDisplay();
+        this.updateSidebarBadges();
+    }
 
-        if (elements.totalTasks) elements.totalTasks.textContent = this.stats.total || 0;
-        if (elements.pendingTasks) elements.pendingTasks.textContent = this.stats.pendentes || 0;
-        if (elements.completedTasks) elements.completedTasks.textContent = this.stats.concluidas || 0;
-        if (elements.overdueTasks) elements.overdueTasks.textContent = this.stats.atrasadas || 0;
+    loadMockTasks() {
+        console.log('Loading mock tasks...');
+        this.tasks = [
+            {
+                id: 1,
+                titulo: 'Desenvolver Interface do Dashboard',
+                descricao: 'Criar e implementar a interface principal do sistema Task-It! com foco na experiência do usuário.',
+                prioridade: 'alta',
+                status: 'em_andamento',
+                data_vencimento: '2024-12-20',
+                categoria: { nome: 'Desenvolvimento', cor: '#8B3DFF' },
+                tags: [{ nome: 'Frontend' }, { nome: 'UI/UX' }]
+            },
+            {
+                id: 2,
+                titulo: 'Estudar para Prova de Matemática',
+                descricao: 'Revisar todos os tópicos de cálculo integral e derivadas para a prova final.',
+                prioridade: 'alta',
+                status: 'pendente',
+                data_vencimento: '2024-12-22',
+                categoria: { nome: 'Estudos', cor: '#10AC84' },
+                tags: [{ nome: 'Matemática' }, { nome: 'Prova' }]
+            },
+            {
+                id: 3,
+                titulo: 'Implementar Sistema de Autenticação',
+                descricao: 'Desenvolver sistema completo de login, registro e recuperação de senha.',
+                prioridade: 'media',
+                status: 'pendente',
+                data_vencimento: '2024-12-25',
+                categoria: { nome: 'Backend', cor: '#FF3D3D' },
+                tags: [{ nome: 'Segurança' }, { nome: 'API' }]
+            },
+            {
+                id: 4,
+                titulo: 'Teste FASE 1',
+                descricao: 'Executar bateria completa de testes para validar funcionalidades da primeira fase.',
+                prioridade: 'baixa',
+                status: 'concluida',
+                data_vencimento: '2024-12-15',
+                categoria: { nome: 'QA', cor: '#FFB930' },
+                tags: [{ nome: 'Testes' }, { nome: 'Validação' }]
+            },
+            {
+                id: 5,
+                titulo: 'Documentação da API',
+                descricao: 'Criar documentação completa dos endpoints da API REST do sistema.',
+                prioridade: 'media',
+                status: 'em_andamento',
+                data_vencimento: '2024-12-30',
+                categoria: { nome: 'Documentação', cor: '#3D8BFF' },
+                tags: [{ nome: 'API' }, { nome: 'Docs' }]
+            },
+            {
+                id: 6,
+                titulo: 'Revisar Código Frontend',
+                descricao: 'Fazer code review completo das funcionalidades implementadas no frontend.',
+                prioridade: 'baixa',
+                status: 'pendente',
+                data_vencimento: '2025-01-05',
+                categoria: { nome: 'Code Review', cor: '#9CA3AF' },
+                tags: [{ nome: 'Frontend' }, { nome: 'Review' }]
+            }
+        ];
+        console.log('Mock tasks loaded:', this.tasks);
+        this.renderTasks();
+    }
+
+    loadMockUpcomingTasks() {
+        console.log('Loading mock upcoming tasks...');
+        const upcomingContainer = document.getElementById('upcomingTasks');
+        
+        if (!upcomingContainer) {
+            console.warn('Upcoming tasks container not found');
+            return;
+        }
+
+        const upcomingTasks = [
+            { 
+                id: 1, 
+                title: 'Estudar para Prova de Matemática', 
+                dueDate: new Date(Date.now() + 86400000),
+                priority: 'alta' 
+            },
+            { 
+                id: 2, 
+                title: 'Entregar Projeto WAD', 
+                dueDate: new Date(Date.now() + 172800000),
+                priority: 'alta' 
+            },
+            { 
+                id: 3, 
+                title: 'Revisar código do frontend', 
+                dueDate: new Date(Date.now() + 432000000),
+                priority: 'media' 
+            }
+        ];
+
+        upcomingContainer.innerHTML = upcomingTasks.map(task => {
+            const today = new Date();
+            const due = new Date(task.dueDate);
+            const diffTime = due - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            let indicator = 'week';
+            let dueText = `${diffDays} dias`;
+            
+            if (diffDays === 0) {
+                indicator = 'today';
+                dueText = 'Hoje';
+            } else if (diffDays === 1) {
+                indicator = 'tomorrow';
+                dueText = 'Amanhã';
+            }
+
+            return `
+                <div class="upcoming-task-item" onclick="window.location.href='/tasks/${task.id}'">
+                    <div class="task-due-indicator ${indicator}"></div>
+                    <div class="upcoming-task-content">
+                        <h4 class="upcoming-task-title">${task.title}</h4>
+                        <p class="upcoming-task-due">Vence em ${dueText}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    loadMockActivityFeed() {
+        console.log('Loading mock activity feed...');
+        const activityContainer = document.getElementById('activityFeed');
+        
+        if (!activityContainer) {
+            console.warn('Activity feed container not found');
+            return;
+        }
+
+        const activities = [
+            { 
+                type: 'completed', 
+                title: 'Tarefa "Teste FASE 1" concluída', 
+                time: 'há 2 horas',
+                icon: 'fa-check-circle'
+            },
+            { 
+                type: 'created', 
+                title: 'Nova tarefa criada: "Estudar React"', 
+                time: 'há 4 horas',
+                icon: 'fa-plus-circle'
+            },
+            { 
+                type: 'updated', 
+                title: 'Tarefa "Projeto Final" atualizada', 
+                time: 'há 6 horas',
+                icon: 'fa-edit'
+            },
+            { 
+                type: 'completed', 
+                title: 'Checklist "Revisão de código" finalizada', 
+                time: 'ontem',
+                icon: 'fa-check-circle'
+            }
+        ];
+
+        activityContainer.innerHTML = activities.map(activity => `
+            <div class="activity-item">
+                <div class="activity-icon ${activity.type}">
+                    <i class="fas ${activity.icon}"></i>
+                </div>
+                <div class="activity-content">
+                    <h4 class="activity-title">${activity.title}</h4>
+                    <p class="activity-time">${activity.time}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ===== ATUALIZAÇÃO DA INTERFACE =====
+    updateStatsDisplay() {
+        console.log('Updating stats display:', this.stats);
+        
+        const totalElement = document.getElementById('totalTasks');
+        const pendingElement = document.getElementById('pendingTasks');
+        const completedElement = document.getElementById('completedTasks');
+        const overdueElement = document.getElementById('overdueTasks');
+
+        if (totalElement) totalElement.textContent = this.stats.total || 0;
+        if (pendingElement) pendingElement.textContent = this.stats.pendentes || 0;
+        if (completedElement) completedElement.textContent = this.stats.concluidas || 0;
+        if (overdueElement) overdueElement.textContent = this.stats.atrasadas || 0;
     }
 
     updateSidebarBadges() {
         const badges = {
-            totalTasksBadge: this.stats.total || 0,
-            allTasksBadge: this.stats.total || 0,
-            pendingTasksBadge: this.stats.pendentes || 0,
-            progressTasksBadge: this.stats.em_andamento || 0,
-            completedTasksBadge: this.stats.concluidas || 0
+            'pending': this.stats.pendentes || 0,
+            'completed': this.stats.concluidas || 0,
+            'overdue': this.stats.atrasadas || 0
         };
 
-        Object.keys(badges).forEach(id => {
-            const element = DOM.$(id);
-            if (element) element.textContent = badges[id];
+        Object.entries(badges).forEach(([key, value]) => {
+            const badge = document.querySelector(`[data-filter="${key}"] .nav-badge`);
+            if (badge) {
+                badge.textContent = value;
+                badge.className = `nav-badge ${key}`;
+            }
         });
     }
 
-
-
     renderTasks() {
-        const container = DOM.$('tasksContainer');
-        if (!container) return;
+        console.log('Rendering tasks...');
+        const container = document.getElementById('tasksContainer');
+        if (!container) {
+            console.warn('Tasks container not found!');
+            return;
+        }
 
-        if (this.tasks.length === 0) {
+        if (!this.tasks || this.tasks.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-tasks"></i>
-                    <h3>Nenhuma tarefa encontrada</h3>
-                    <p>Comece criando sua primeira tarefa!</p>
-                    <button class="btn btn-primary" onclick="window.location.href='/tasks/new'">
-                        <i class="fas fa-plus"></i>
-                        Nova Tarefa
-                    </button>
+                    <p>Nenhuma tarefa encontrada</p>
                 </div>
             `;
             return;
         }
 
-        const tasksHTML = this.tasks.map(task => this.createTaskCard(task)).join('');
-        container.innerHTML = `<div class="tasks-list">${tasksHTML}</div>`;
+        // Limitar a 6 tarefas no dashboard
+        const recentTasks = this.tasks.slice(0, 6);
+
+        container.innerHTML = `
+            <div class="tasks-list">
+                ${recentTasks.map(task => this.renderTaskCard(task)).join('')}
+            </div>
+        `;
     }
 
-    createTaskCard(task) {
-        const priorityClass = `priority-${task.priority}`;
-        const statusClass = `status-${task.status}`;
-        const dueDate = task.due_date ? Utils.formatDate(task.due_date, 'relative') : '';
-        const categoryColor = task.category_color || '#8B3DFF';
-        const categoryName = task.category_name || 'Sem categoria';
-
+    renderTaskCard(task) {
+        const priorityClass = task.prioridade || 'baixa';
+        const statusClass = task.status || 'pendente';
+        const dueDate = task.data_vencimento ? new Date(task.data_vencimento).toLocaleDateString('pt-BR') : 'Sem prazo';
+        
         return `
-            <div class="task-card ${priorityClass} ${statusClass}" onclick="openTaskDetail(${task.id})">
+            <div class="task-card priority-${priorityClass} status-${statusClass}" onclick="dashboard.viewTask(${task.id})">
                 <div class="task-header">
                     <div class="task-priority">
-                        <span class="tag tag-priority-${task.priority}">
-                            ${Utils.formatPriority(task.priority)}
-                        </span>
+                        <span class="priority-badge ${priorityClass}">${priorityClass.toUpperCase()}</span>
                     </div>
                     <div class="task-actions">
-                        <button class="btn-icon btn-sm" onclick="event.stopPropagation(); toggleTaskStatus(${task.id})" title="Marcar como concluída">
-                            <i class="fas ${task.status === 'concluida' ? 'fa-check-circle' : 'fa-circle'}"></i>
+                        <button class="btn-icon btn-sm" onclick="event.stopPropagation(); dashboard.editTask(${task.id})" title="Editar">
+                            <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn-icon btn-sm" onclick="event.stopPropagation(); openTaskMenu(${task.id})" title="Mais opções">
-                            <i class="fas fa-ellipsis-v"></i>
+                        <button class="btn-icon btn-sm" onclick="event.stopPropagation(); dashboard.toggleTaskStatus(${task.id})" title="Marcar como ${statusClass === 'concluida' ? 'pendente' : 'concluída'}">
+                            <i class="fas ${statusClass === 'concluida' ? 'fa-undo' : 'fa-check'}"></i>
                         </button>
                     </div>
                 </div>
                 <div class="task-content">
-                    <h3 class="task-title">${Utils.sanitizeHTML(task.title)}</h3>
-                    <p class="task-description">${Utils.truncateText(task.description || '', 100)}</p>
+                    <h3 class="task-title">${task.titulo}</h3>
+                    <p class="task-description">${task.descricao}</p>
                 </div>
                 <div class="task-footer">
                     <div class="task-meta">
-                        <div class="task-category">
-                            <div class="category-color" style="background: ${categoryColor};"></div>
-                            <span>${categoryName}</span>
-                        </div>
-                        ${dueDate ? `<div class="task-due-date">
-                            <i class="fas fa-clock"></i>
-                            <span>${dueDate}</span>
-                        </div>` : ''}
-                    </div>
-                    <div class="task-status">
-                        <span class="tag tag-status-${task.status}">
-                            ${Utils.formatStatus(task.status)}
+                        <span class="task-due">
+                            <i class="fas fa-calendar"></i>
+                            ${dueDate}
                         </span>
+                        ${task.categoria ? `
+                            <span class="task-category" style="color: ${task.categoria.cor}">
+                                <i class="fas fa-tag"></i>
+                                ${task.categoria.nome}
+                            </span>
+                        ` : ''}
                     </div>
+                    ${task.tags && task.tags.length > 0 ? `
+                        <div class="task-tags">
+                            ${task.tags.map(tag => `<span class="tag">${tag.nome}</span>`).join('')}
+                        </div>
+                    ` : ''}
                 </div>
             </div>
         `;
     }
 
-    renderCategories() {
-        const container = DOM.$('categoriesList');
-        if (!container || this.categories.length === 0) return;
-
-        const categoriesHTML = this.categories.map(category => `
-            <li class="nav-item">
-                <a href="#" class="nav-link" onclick="filterByCategory(${category.id})">
-                    <div class="category-color" style="background: ${category.cor};"></div>
-                    <span>${Utils.sanitizeHTML(category.nome)}</span>
-                    <span class="nav-badge">${category.task_count || 0}</span>
-                </a>
-            </li>
-        `).join('');
-
-        container.innerHTML = categoriesHTML;
-    }
-
-    renderTags() {
-        const container = DOM.$('tagsList');
-        if (!container || this.tags.length === 0) return;
-
-        const tagsHTML = this.tags.map(tag => `
-            <span class="tag tag-filter" onclick="filterByTag(${tag.id})" style="background: ${tag.cor}; color: white;">
-                ${Utils.sanitizeHTML(tag.nome)}
-            </span>
-        `).join('');
-
-        container.innerHTML = tagsHTML;
-    }
-
-    renderUpcomingTasks(tasks) {
-        const container = DOM.$('upcomingTasks');
-        if (!container) return;
-
-        if (tasks.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state-small">
-                    <i class="fas fa-calendar-check"></i>
-                    <p>Nenhuma tarefa próxima do vencimento</p>
-                </div>
-            `;
-            return;
-        }
-
-        const tasksHTML = tasks.map(task => `
-            <div class="upcoming-task" onclick="openTaskDetail(${task.id})">
-                <div class="upcoming-task-content">
-                    <h4>${Utils.sanitizeHTML(task.title)}</h4>
-                    <p>${Utils.formatDate(task.due_date)}</p>
-                </div>
-                <div class="upcoming-task-priority">
-                    <span class="tag tag-priority-${task.priority}">
-                        ${Utils.formatPriority(task.priority)}
-                    </span>
-                </div>
-            </div>
-        `).join('');
-
-        container.innerHTML = tasksHTML;
-    }
-
-    renderActivityFeed(activities) {
-        const container = DOM.$('activityFeed');
-        if (!container) return;
-
-        const activitiesHTML = activities.map(activity => `
-            <div class="activity-item">
-                <div class="activity-icon ${activity.color}">
-                    <i class="${activity.icon}"></i>
-                </div>
-                <div class="activity-content">
-                    <p>${activity.message}</p>
-                    <span class="activity-time">${activity.time}</span>
-                </div>
-            </div>
-        `).join('');
-
-        container.innerHTML = activitiesHTML;
-    }
-
-    showTasksError() {
-        const container = DOM.$('tasksContainer');
-        if (container) {
-            container.innerHTML = `
-                <div class="error-state">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <h3>Erro ao carregar tarefas</h3>
-                    <p>Tente recarregar a página</p>
-                    <button class="btn btn-primary" onclick="location.reload()">
-                        <i class="fas fa-refresh"></i>
-                        Recarregar
-                    </button>
-                </div>
-            `;
-        }
-    }
-
     // ===== EVENT LISTENERS =====
     setupEventListeners() {
         // Search functionality
-        const searchInput = DOM.$('searchInput');
+        const searchInput = document.getElementById('searchInput');
         if (searchInput) {
-            searchInput.addEventListener('input', Utils.debounce((e) => {
+            searchInput.addEventListener('input', (e) => {
                 this.searchTasks(e.target.value);
-            }, 300));
+            });
         }
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                switch (e.key) {
-                    case 'n':
-                        e.preventDefault();
-                        window.location.href = '/tasks/new';
-                        break;
-                    case 'k':
-                        e.preventDefault();
-                        searchInput?.focus();
-                        break;
-                }
-            }
+        // Filter buttons
+        document.querySelectorAll('[data-filter]').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const filter = button.getAttribute('data-filter');
+                this.filterTasks(filter);
+            });
         });
     }
 
-    // ===== FUNCIONALIDADES =====
+    // ===== TASK ACTIONS =====
+    viewTask(taskId) {
+        window.location.href = `/tasks/${taskId}`;
+    }
+
+    editTask(taskId) {
+        window.location.href = `/tasks/${taskId}/edit`;
+    }
+
+    toggleTaskStatus(taskId) {
+        const task = this.tasks.find(t => t.id === taskId);
+        if (!task) return;
+
+        const newStatus = task.status === 'concluida' ? 'pendente' : 'concluida';
+        task.status = newStatus;
+        this.renderTasks();
+        this.loadMockStats(); // Refresh stats
+    }
+
     searchTasks(query) {
         if (!query.trim()) {
             this.renderTasks();
             return;
         }
 
-        const filteredTasks = this.tasks.filter(task => 
-            task.title.toLowerCase().includes(query.toLowerCase()) ||
-            (task.description && task.description.toLowerCase().includes(query.toLowerCase()))
+        const filteredTasks = this.tasks.filter(task =>
+            task.titulo.toLowerCase().includes(query.toLowerCase()) ||
+            task.descricao.toLowerCase().includes(query.toLowerCase())
         );
 
-        const container = DOM.$('tasksContainer');
-        if (container) {
-            if (filteredTasks.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-search"></i>
-                        <h3>Nenhuma tarefa encontrada</h3>
-                        <p>Tente usar outros termos de busca</p>
-                    </div>
-                `;
-            } else {
-                const tasksHTML = filteredTasks.map(task => this.createTaskCard(task)).join('');
-                container.innerHTML = `<div class="tasks-list">${tasksHTML}</div>`;
-            }
+        this.renderFilteredTasks(filteredTasks);
+    }
+
+    filterTasks(filter) {
+        let filteredTasks;
+
+        switch (filter) {
+            case 'pending':
+                filteredTasks = this.tasks.filter(task => task.status === 'pendente');
+                break;
+            case 'in-progress':
+                filteredTasks = this.tasks.filter(task => task.status === 'em_andamento');
+                break;
+            case 'completed':
+                filteredTasks = this.tasks.filter(task => task.status === 'concluida');
+                break;
+            case 'overdue':
+                filteredTasks = this.tasks.filter(task => {
+                    if (!task.data_vencimento) return false;
+                    return new Date(task.data_vencimento) < new Date() && task.status !== 'concluida';
+                });
+                break;
+            default:
+                filteredTasks = this.tasks;
         }
+
+        this.renderFilteredTasks(filteredTasks);
     }
 
-    async refreshData() {
-        Loading.show('Atualizando dados...');
-        await this.init();
+    renderFilteredTasks(tasks) {
+        const container = document.getElementById('tasksContainer');
+        if (!container) return;
+
+        if (tasks.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <p>Nenhuma tarefa encontrada</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="tasks-list">
+                ${tasks.map(task => this.renderTaskCard(task)).join('')}
+            </div>
+        `;
     }
 
-    // ===== ANIMAÇÕES =====
-    animateStatCards() {
-        // Animate numbers counting up
-        const statNumbers = document.querySelectorAll('.stat-number');
-
-        statNumbers.forEach((element, index) => {
-            const finalValue = parseInt(element.textContent) || 0;
-            element.textContent = '0';
-
-            // Stagger animation start
-            setTimeout(() => {
-                this.animateNumber(element, 0, finalValue, 1000);
-            }, index * 200);
-        });
-
-        // Animate cards entrance
-        const statCards = document.querySelectorAll('.stat-card');
-        statCards.forEach((card, index) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-
-            setTimeout(() => {
-                card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, index * 150);
-        });
-    }
-
-    animateNumber(element, start, end, duration) {
-        const startTime = performance.now();
-
-        const updateNumber = (currentTime) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-
-            // Easing function for smooth animation
-            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-            const currentValue = Math.round(start + (end - start) * easeOutQuart);
-
-            element.textContent = currentValue;
-
-            if (progress < 1) {
-                requestAnimationFrame(updateNumber);
-            }
-        };
-
-        requestAnimationFrame(updateNumber);
+    // ===== UTILITIES =====
+    hideLoading() {
+        const spinner = document.getElementById('loading-spinner');
+        if (spinner) {
+            spinner.classList.add('hidden');
+            spinner.style.display = 'none';
+        }
     }
 }
 
-// ===== FUNÇÕES GLOBAIS =====
+// ===== INICIALIZAÇÃO GLOBAL =====
 let dashboard;
 
-// Initialize dashboard
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM loaded, initializing dashboard...');
     dashboard = new Dashboard();
     await dashboard.init();
 });
 
-// Load sidebar state from localStorage
-function loadSidebarState() {
-    const sidebar = DOM.$('sidebar');
-    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-    
-    if (sidebar && isCollapsed && window.innerWidth > 1024) {
-        sidebar.classList.add('sidebar-collapsed');
-    }
-}
-
-// Initialize sidebar state on page load
-document.addEventListener('DOMContentLoaded', function() {
-    loadSidebarState();
-    
-    // Re-check sidebar state on window resize
-    window.addEventListener('resize', function() {
-        const sidebar = DOM.$('sidebar');
-        if (sidebar && window.innerWidth <= 1024) {
-            // Remove collapsed class on mobile to ensure proper mobile behavior
-            sidebar.classList.remove('sidebar-collapsed');
-        } else if (sidebar && window.innerWidth > 1024) {
-            // Restore collapsed state on desktop
-            loadSidebarState();
-        }
-    });
-});
-
-// Global functions for onclick handlers
+// ===== FUNÇÕES GLOBAIS =====
 function toggleSidebar() {
-    const sidebar = DOM.$('sidebar');
-    const overlay = DOM.$('sidebarOverlay');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
     
-    // Check if we're on mobile (based on screen width)
-    const isMobile = window.innerWidth <= 1024;
-    
-    if (isMobile) {
-        // Mobile behavior - show/hide sidebar with overlay
-        if (sidebar && overlay) {
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
-        }
-    } else {
-        // Desktop behavior - collapse/expand sidebar
-        if (sidebar) {
-            sidebar.classList.toggle('sidebar-collapsed');
-            
-            // Save state to localStorage
-            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
-            localStorage.setItem('sidebarCollapsed', isCollapsed);
-        }
+    if (sidebar) {
+        sidebar.classList.toggle('open');
     }
-}
-
-function closeSidebar() {
-    const sidebar = DOM.$('sidebar');
-    const overlay = DOM.$('sidebarOverlay');
-    
-    if (sidebar && overlay) {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('active');
+    if (overlay) {
+        overlay.classList.toggle('active');
     }
-}
-
-function toggleProfileMenu() {
-    const menu = DOM.$('profileMenu');
-    if (menu) {
-        menu.classList.toggle('active');
-    }
-}
-
-function logout() {
-    Modal.confirm('Tem certeza que deseja sair?', 'Confirmar Logout')
-        .then(confirmed => {
-            if (confirmed) {
-                API.logout();
-            }
-        });
-}
-
-function filterTasks(filter) {
-    if (dashboard) {
-        dashboard.currentFilter = filter;
-        // Implement filtering logic
-        console.log('Filtering tasks by:', filter);
-    }
-}
-
-function filterByCategory(categoryId) {
-    console.log('Filtering by category:', categoryId);
-}
-
-function filterByTag(tagId) {
-    console.log('Filtering by tag:', tagId);
-}
-
-function setTaskView(view) {
-    if (dashboard) {
-        dashboard.currentView = view;
-        // Update view toggle buttons
-        DOM.findAll('.view-toggle .btn-icon').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
-        
-        // Re-render tasks with new view
-        dashboard.renderTasks();
-    }
-}
-
-function openTaskDetail(taskId) {
-    window.location.href = `/tasks/${taskId}`;
-}
-
-function toggleTaskStatus(taskId) {
-    // Implement task status toggle
-    console.log('Toggling task status:', taskId);
-}
-
-function openTaskMenu(taskId) {
-    // Implement task context menu
-    console.log('Opening task menu:', taskId);
-}
-
-function openCategoryModal() {
-    // Implement category creation modal
-    console.log('Opening category modal');
-}
-
-function openTagModal() {
-    // Implement tag creation modal
-    console.log('Opening tag modal');
 }
 
 function toggleNotifications() {
-    const panel = DOM.$('notificationsPanel');
+    const panel = document.getElementById('notificationsPanel');
     if (panel) {
         panel.classList.toggle('active');
     }
 }
-
-function exportTasks() {
-    if (dashboard && dashboard.tasks) {
-        Utils.downloadJSON(dashboard.tasks, 'tasks-export.json');
-        Toast.success('Tarefas exportadas com sucesso!');
-    }
-}
-
-// Make Dashboard globally available
-window.Dashboard = Dashboard;

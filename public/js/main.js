@@ -5,6 +5,9 @@
 
 // ===== INICIALIZAÇÃO GLOBAL =====
 document.addEventListener('DOMContentLoaded', function() {
+    // Hide loading spinner immediately
+    hideGlobalLoading();
+    
     // Initialize global components
     initializeGlobalComponents();
     
@@ -341,6 +344,14 @@ function refreshDataIfNeeded() {
             window.dashboard.refreshData();
         }
         Utils.storage.set('lastRefresh', now);
+    }
+}
+
+function hideGlobalLoading() {
+    const spinner = document.getElementById('loading-spinner');
+    if (spinner) {
+        spinner.classList.add('hidden');
+        spinner.style.display = 'none';
     }
 }
 

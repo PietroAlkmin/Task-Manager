@@ -1,6 +1,5 @@
 <!-- =====================================================
-     TASK-IT! - SIDEBAR DE NAVEGAÇÃO
-     Seguindo protótipos de alta fidelidade
+     TASK-IT! - SIDEBAR DE NAVEGAÇÃO SIMPLIFICADA
      ===================================================== -->
 
 <aside class="sidebar" id="sidebar">
@@ -9,158 +8,70 @@
         <div class="sidebar-logo">
             <i class="fas fa-tasks"></i>
             <h2>Task-It!</h2>
-        </div>        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
             <i class="fas fa-chevron-left"></i>
         </button>
-    </div>
-
-    <!-- Perfil do Usuário -->
-    <div class="sidebar-profile">
-        <div class="profile-avatar">
-            <i class="fas fa-user"></i>
-        </div>
-        <div class="profile-info">
-            <h3 class="profile-name" id="userName">Pietro Alkmin</h3>
-            <p class="profile-email" id="userEmail">pietro@inteli.edu.br</p>
-        </div>
-        <div class="profile-dropdown">
-            <button class="btn-icon" onclick="toggleProfileMenu()">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Menu de Perfil (Dropdown) -->
-    <div class="profile-menu" id="profileMenu">
-        <a href="#" class="profile-menu-item">
-            <i class="fas fa-user-cog"></i>
-            <span>Configurações</span>
-        </a>
-        <a href="#" class="profile-menu-item">
-            <i class="fas fa-bell"></i>
-            <span>Notificações</span>
-        </a>
-        <div class="profile-menu-divider"></div>
-        <a href="#" class="profile-menu-item" onclick="logout()">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Sair</span>
-        </a>
     </div>
 
     <!-- Navegação Principal -->
     <nav class="sidebar-nav">
         <div class="nav-section">
-            <h4 class="nav-section-title">Principal</h4>            <ul class="nav-list">
+            <ul class="nav-list">
                 <li class="nav-item active">
-                    <a href="/" class="nav-link" data-tooltip="Dashboard">
+                    <a href="/" class="nav-link">
                         <i class="fas fa-home"></i>
                         <span>Dashboard</span>
-                        <span class="nav-badge" id="totalTasksBadge">7</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/calendar" class="nav-link" data-tooltip="Calendário">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Calendário</span>
+                    <a href="/tasks" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>Todas as Tarefas</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/tasks/new" class="nav-link" data-tooltip="Nova Tarefa">
+                    <a href="/tasks/new" class="nav-link">
                         <i class="fas fa-plus"></i>
                         <span>Nova Tarefa</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="/calendar" class="nav-link">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Calendário</span>
+                    </a>
+                </li>
             </ul>
         </div>
 
         <div class="nav-section">
-            <h4 class="nav-section-title">Filtros</h4>            <ul class="nav-list">
+            <h4 class="nav-section-title">Filtros Rápidos</h4>
+            <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterTasks('all')" data-tooltip="Todas">
-                        <i class="fas fa-list"></i>
-                        <span>Todas</span>
-                        <span class="nav-badge" id="allTasksBadge">7</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterTasks('pending')" data-tooltip="Pendentes">
+                    <a href="#" class="nav-link filter-link" data-filter="pendente" onclick="handleSidebarFilter('pendente')">
                         <i class="fas fa-clock"></i>
                         <span>Pendentes</span>
-                        <span class="nav-badge pending" id="pendingTasksBadge">4</span>
+                        <span class="nav-badge pending" id="pendingTasksBadge">0</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterTasks('progress')" data-tooltip="Em Andamento">
-                        <i class="fas fa-play"></i>
-                        <span>Em Andamento</span>
-                        <span class="nav-badge progress" id="progressTasksBadge">1</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterTasks('completed')" data-tooltip="Concluídas">
-                        <i class="fas fa-check"></i>
+                    <a href="#" class="nav-link filter-link" data-filter="concluida" onclick="handleSidebarFilter('concluida')">
+                        <i class="fas fa-check-circle"></i>
                         <span>Concluídas</span>
-                        <span class="nav-badge completed" id="completedTasksBadge">2</span>
+                        <span class="nav-badge completed" id="completedTasksBadge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link filter-link" data-filter="overdue" onclick="handleSidebarFilter('overdue')">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Atrasadas</span>
+                        <span class="nav-badge overdue" id="overdueTasksBadge">0</span>
                     </a>
                 </li>
             </ul>
-        </div>
-
-        <div class="nav-section">
-            <div class="nav-section-header">
-                <h4 class="nav-section-title">Categorias</h4>
-                <button class="btn-icon btn-sm" onclick="openCategoryModal()" title="Adicionar categoria">
-                    <i class="fas fa-plus"></i>
-                </button>
-            </div>            <ul class="nav-list" id="categoriesList">
-                <!-- Categorias serão carregadas dinamicamente -->
-                <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterByCategory(5)" data-tooltip="Inteli">
-                        <div class="category-color" style="background: #8B3DFF;"></div>
-                        <span>Inteli</span>
-                        <span class="nav-badge">3</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterByCategory(1)" data-tooltip="Estudos">
-                        <div class="category-color" style="background: #FF6B6B;"></div>
-                        <span>Estudos</span>
-                        <span class="nav-badge">2</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" onclick="filterByCategory(2)" data-tooltip="Trabalho">
-                        <div class="category-color" style="background: #4ECDC4;"></div>
-                        <span>Trabalho</span>
-                        <span class="nav-badge">1</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="nav-section">
-            <div class="nav-section-header">
-                <h4 class="nav-section-title">Tags</h4>
-                <button class="btn-icon btn-sm" onclick="openTagModal()" title="Adicionar tag">
-                    <i class="fas fa-plus"></i>
-                </button>
-            </div>
-            <div class="tags-list" id="tagsList">
-                <!-- Tags serão carregadas dinamicamente -->
-                <span class="tag tag-filter" onclick="filterByTag(1)" style="background: #FF3D3D; color: white;">
-                    Urgente
-                </span>
-                <span class="tag tag-filter" onclick="filterByTag(2)" style="background: #FFB930; color: white;">
-                    Importante
-                </span>
-                <span class="tag tag-filter" onclick="filterByTag(6)" style="background: #E74C3C; color: white;">
-                    Entrega
-                </span>
-            </div>
         </div>
     </nav>
-
-
 </aside>
 
 <!-- Overlay para mobile -->

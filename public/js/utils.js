@@ -388,6 +388,41 @@ const DOM = {
     }
 };
 
+// ===== LOADING UTILITIES =====
+const Loading = {
+    show(message = 'Carregando...') {
+        let loader = document.getElementById('globalLoader');
+        if (!loader) {
+            loader = document.createElement('div');
+            loader.id = 'globalLoader';
+            loader.className = 'loading-overlay';
+            loader.innerHTML = `
+                <div class="loading-content">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-message">${message}</p>
+                </div>
+            `;
+            document.body.appendChild(loader);
+        }
+        loader.style.display = 'flex';
+    },
+
+    hide() {
+        const loader = document.getElementById('globalLoader');
+        if (loader) {
+            loader.style.display = 'none';
+        }
+    },
+
+    setMessage(message) {
+        const messageEl = document.querySelector('.loading-message');
+        if (messageEl) {
+            messageEl.textContent = message;
+        }
+    }
+};
+
 // Make utilities globally available
 window.Utils = Utils;
 window.DOM = DOM;
+window.Loading = Loading;
