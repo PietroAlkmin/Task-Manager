@@ -1,49 +1,77 @@
+/**
+ * Classe responsável por gerenciar operações CRUD de usuários no frontend
+ * Faz chamadas assíncronas para a API usando fetch() e manipula o DOM
+ */
 class UserManager {
+  /**
+   * Constructor que inicializa a URL base da API e chama o método de inicialização
+   */
   constructor() {
-    this.apiBase = '/users';
-    this.init();
+    this.apiBase = '/users'; // URL base para todas as requisições da API
+    this.init(); // Inicializa a classe
   }
 
+  /**
+   * Método de inicialização que aguarda o DOM estar pronto
+   */
   init() {
+    // Verifica se o DOM ainda está carregando
     if (document.readyState === 'loading') {
+      // Se ainda carregando, aguarda o evento DOMContentLoaded
       document.addEventListener('DOMContentLoaded', () => this.onDOMReady());
     } else {
+      // Se já carregou, executa imediatamente
       this.onDOMReady();
     }
   }
 
+  /**
+   * Método executado quando o DOM está completamente carregado
+   * Configura animações, event listeners e carrega dados iniciais
+   */
   onDOMReady() {
+    // ANIMAÇÕES DE ENTRADA
+    // Seleciona todos os elementos com classe 'fade-in' para animar
     document.querySelectorAll('.fade-in').forEach(element => {
-      element.style.opacity = '0';
-      element.style.transform = 'translateY(20px)';
+      element.style.opacity = '0';              // Começa invisível
+      element.style.transform = 'translateY(20px)'; // Começa 20px abaixo
       
+      // Após 100ms, aplica a transição suave
       setTimeout(() => {
         element.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
-        element.style.opacity = '1';
-        element.style.transform = 'translateY(0)';
+        element.style.opacity = '1';            // Fica visível
+        element.style.transform = 'translateY(0)'; // Move para posição original
       }, 100);
     });
 
+    // CARREGAMENTO INICIAL DE DADOS
+    // Se existe tabela de usuários na página, carrega os dados
     const usersTable = document.querySelector('#usersTable');
     if (usersTable) {
-      this.loadUsers();
+      this.loadUsers(); // Carrega lista de usuários via API
     }
 
+    // EVENT LISTENERS - Configuração dos botões e eventos
+    
+    // Botão para atualizar/recarregar lista de usuários
     const refreshBtn = document.querySelector('#refreshUsers');
     if (refreshBtn) {
       refreshBtn.addEventListener('click', () => this.loadUsers());
     }
 
+    // Botão para abrir modal de criação de usuário
     const createBtn = document.querySelector('#createUser');
     if (createBtn) {
       createBtn.addEventListener('click', () => this.showCreateModal());
     }
 
+    // Botão para salvar usuário (criar ou editar)
     const saveBtn = document.querySelector('#saveUser');
     if (saveBtn) {
       saveBtn.addEventListener('click', () => this.createUser());
     }
 
+    // Botão para editar usuário a partir da visualização
     const editFromViewBtn = document.querySelector('#editFromView');
     if (editFromViewBtn) {
       editFromViewBtn.addEventListener('click', () => this.editFromView());

@@ -131,6 +131,7 @@ class UserRepository {
       throw new Error(`Erro ao criar usuário: ${error.message}`);
     }
   }
+
   /**
    * Atualiza os dados de um usuário existente
    * @param {string} id - UUID do usuário a ser atualizado
@@ -226,7 +227,8 @@ class UserRepository {
       }
       if (error.code === '22P02') {
         throw new Error('ID deve ser um número válido');
-      }      if (error.message.includes('obrigatório')) {
+      }
+      if (error.message.includes('obrigatório')) {
         throw error;
       }
       throw new Error(`Erro ao deletar usuário: ${error.message}`);
@@ -264,109 +266,4 @@ class UserRepository {
 }
 
 // Exporta a classe para ser usada em outros módulos
-module.exports = UserRepository;
-  async findByEmail(email) {
-    try {
-      if (!this.db) {
-        throw new Error('Conexão com banco de dados não disponível');
-      }
-
-      if (!email) {
-        throw new Error('Email é obrigatório para busca');
-      }
-
-      // Query para buscar usuário por email (usado para validar duplicatas)
-      const result = await this.db.query('SELECT * FROM users WHERE email = $1', [email]);
-      return result.rows[0] || null;
-    } catch (error) {
-      if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
-        throw new Error('Erro de conexão com o banco de dados');
-      }
-      if (error.message.includes('obrigatório')) {
-        throw error;
-      }
-      throw new Error(`Erro ao buscar usuário por email: ${error.message}`);
-    }
-  }
-}
-
-// Exporta a classe para ser usada em outros módulos
-module.exports = UserRepository;
-   * @param {string} email - Email do usuário a ser buscado
-   * @returns {Object|null} Dados do usuário ou null se não encontrado
-   */
-  async findByEmail(email) {
-    try {
-      if (!this.db) {
-        throw new Error('Conexão com banco de dados não disponível');
-      }
-
-      if (!email) {
-        throw new Error('Email é obrigatório para busca');
-      }
-
-      // Query para buscar usuário por email (usado para validar duplicatas)
-      const result = await this.db.query('SELECT * FROM users WHERE email = $1', [email]);
-      return result.rows[0] || null;
-    } catch (error) {
-      if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
-        throw new Error('Erro de conexão com o banco de dados');
-      }
-      if (error.message.includes('obrigatório')) {
-        throw error;
-      }
-      throw new Error(`Erro ao buscar usuário por email: ${error.message}`);
-    }
-  }
-}
-
-// Exporta a classe para ser usada em outros módulos
-module.exports = UserRepository;
-        throw new Error('Conexão com banco de dados não disponível');
-      }
-
-      if (!id) {
-        throw new Error('ID é obrigatório para exclusão');
-      }
-
-      const result = await this.db.query('DELETE FROM users WHERE id = $1 RETURNING *', [id]);
-      return result.rows[0] || null;
-    } catch (error) {
-      if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
-        throw new Error('Erro de conexão com o banco de dados');
-      }
-      if (error.code === '22P02') {
-        throw new Error('ID deve ser um número válido');
-      }
-      if (error.message.includes('obrigatório')) {
-        throw error;
-      }
-      throw new Error(`Erro ao deletar usuário: ${error.message}`);
-    }
-  }
-
-  async findByEmail(email) {
-    try {
-      if (!this.db) {
-        throw new Error('Conexão com banco de dados não disponível');
-      }
-
-      if (!email) {
-        throw new Error('Email é obrigatório para busca');
-      }
-
-      const result = await this.db.query('SELECT * FROM users WHERE email = $1', [email]);
-      return result.rows[0] || null;
-    } catch (error) {
-      if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND') {
-        throw new Error('Erro de conexão com o banco de dados');
-      }
-      if (error.message.includes('obrigatório')) {
-        throw error;
-      }
-      throw new Error(`Erro ao buscar usuário por email: ${error.message}`);
-    }
-  }
-}
-
 module.exports = UserRepository;
